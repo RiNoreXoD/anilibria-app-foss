@@ -30,10 +30,7 @@ class VkWebViewClient(
 
     private var loadingFinished = true
     private var redirect = false
-    private var authCheckIntercepted = false
 
-    private val authRequestRegex = Regex("oauth\\.vk\\.com\\/authorize\\?|vk\\.com\\/login\\?")
-    private val authCheckRegex = Regex("vk\\.com\\/login\\?act=authcheck")
     private val commentsRegex = Regex("widget_comments(?:\\.\\w+?)?\\.css")
 
     override fun shouldInterceptRequest(
@@ -41,23 +38,8 @@ class VkWebViewClient(
         request: WebResourceRequestCompat,
     ): WebResourceResponse? {
         val url = request.url.toString()
-        return tryInterceptAuthCheck(url)
-            ?: tryInterceptComments(url)
+        return tryInterceptComments(url)
             ?: super.shouldInterceptRequest(view, request)
-    }
-
-    private fun tryInterceptAuthCheck(url: String?): WebResourceResponse? {
-        val needAuth = authCheckRegex.containsMatchIn(url.orEmpty())
-        if (needAuth && !authCheckIntercepted) {
-            authCheckIntercepted = true
-            val mobileUrl = if (!url.orEmpty().contains("/m.vk.com/")) {
-                url.orEmpty().replace("vk.com", "/m.vk.com/")
-            } else {
-                url.orEmpty()
-            }
-            viewModel.authRequest(mobileUrl)
-        }
-        return null
     }
 
     private fun tryInterceptComments(url: String?): WebResourceResponse? {
@@ -103,17 +85,12 @@ class VkWebViewClient(
 
         loadingFinished = false
 
-        if (url.contains(authRequestRegex)) {
-            viewModel.authRequest(url)
-            return true
-        }
         systemUtils.externalLink(url)
         return true
     }
 
     override fun onPageStarted(view: WebView, url: String, favicon: Bitmap?) {
         super.onPageStarted(view, url, favicon)
-        authCheckIntercepted = false
         loadingFinished = false
     }
 

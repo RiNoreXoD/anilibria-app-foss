@@ -11,7 +11,7 @@
             android:defaultValue="true"
             android:key="notifications.all"
             android:layout="@layout/preference_custom"
-            android:summary="Уведомления о новых сериях и YouTube роликах"
+            android:summary="Уведомления о новых сериях"
             android:title="Общие"
             app:icon="@drawable/ic_baseline_notifications_24" />
 

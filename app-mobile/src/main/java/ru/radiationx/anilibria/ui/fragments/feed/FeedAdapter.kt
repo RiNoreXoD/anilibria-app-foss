@@ -1,14 +1,11 @@
 package ru.radiationx.anilibria.ui.fragments.feed
 
 import android.view.View
-import ru.radiationx.anilibria.model.DonationCardItemState
 import ru.radiationx.anilibria.model.ReleaseItemState
 import ru.radiationx.anilibria.model.ScheduleItemState
-import ru.radiationx.anilibria.model.YoutubeItemState
 import ru.radiationx.anilibria.ui.adapters.AppInfoCardListItem
 import ru.radiationx.anilibria.ui.adapters.AppWarningCardListItem
 import ru.radiationx.anilibria.ui.adapters.DividerShadowListItem
-import ru.radiationx.anilibria.ui.adapters.DonationCardListItem
 import ru.radiationx.anilibria.ui.adapters.FeedListItem
 import ru.radiationx.anilibria.ui.adapters.FeedRandomBtnListItem
 import ru.radiationx.anilibria.ui.adapters.FeedSchedulesListItem
@@ -21,12 +18,10 @@ import ru.radiationx.anilibria.ui.adapters.PlaceholderListItem
 import ru.radiationx.anilibria.ui.adapters.ShadowDirection
 import ru.radiationx.anilibria.ui.adapters.feed.AppInfoCardDelegate
 import ru.radiationx.anilibria.ui.adapters.feed.AppWarningCardDelegate
-import ru.radiationx.anilibria.ui.adapters.feed.DonationCardDelegate
 import ru.radiationx.anilibria.ui.adapters.feed.FeedRandomBtnDelegate
 import ru.radiationx.anilibria.ui.adapters.feed.FeedReleaseDelegate
 import ru.radiationx.anilibria.ui.adapters.feed.FeedSchedulesDelegate
 import ru.radiationx.anilibria.ui.adapters.feed.FeedSectionDelegate
-import ru.radiationx.anilibria.ui.adapters.feed.FeedYoutubeDelegate
 import ru.radiationx.anilibria.ui.adapters.global.LoadErrorDelegate
 import ru.radiationx.anilibria.ui.adapters.global.LoadMoreDelegate
 import ru.radiationx.anilibria.ui.adapters.other.DividerShadowItemDelegate
@@ -40,15 +35,11 @@ class FeedAdapter(
     loadRetryListener: () -> Unit,
     warningClickListener: (FeedAppWarning) -> Unit,
     warningClickCloseListener: (FeedAppWarning) -> Unit,
-    donationListener: (DonationCardItemState) -> Unit,
-    donationCloseListener: (DonationCardItemState) -> Unit,
     schedulesClickListener: () -> Unit,
     scheduleScrollListener: (Int) -> Unit,
     randomClickListener: () -> Unit,
     releaseClickListener: (ReleaseItemState, View) -> Unit,
     releaseLongClickListener: (ReleaseItemState) -> Unit,
-    youtubeClickListener: (YoutubeItemState) -> Unit,
-    youtubeLongClickListener: (YoutubeItemState) -> Unit,
     scheduleClickListener: (ScheduleItemState, View, Int) -> Unit,
     private val emptyPlaceHolder: PlaceholderListItem,
     private val errorPlaceHolder: PlaceholderListItem,
@@ -68,7 +59,6 @@ class FeedAdapter(
     init {
         addDelegate(AppInfoCardDelegate(warningClickListener, warningClickCloseListener))
         addDelegate(AppWarningCardDelegate(warningClickListener, warningClickCloseListener))
-        addDelegate(DonationCardDelegate(donationListener, donationCloseListener))
         addDelegate(LoadMoreDelegate(loadMoreListener))
         addDelegate(LoadErrorDelegate(loadRetryListener))
         addDelegate(FeedSectionDelegate(sectionClickListener))
@@ -80,7 +70,6 @@ class FeedAdapter(
             )
         )
         addDelegate(FeedReleaseDelegate(releaseClickListener, releaseLongClickListener))
-        addDelegate(FeedYoutubeDelegate(youtubeClickListener, youtubeLongClickListener))
         addDelegate(FeedRandomBtnDelegate(randomClickListener))
         addDelegate(DividerShadowItemDelegate())
         addDelegate(PlaceholderDelegate())
@@ -116,10 +105,6 @@ class FeedAdapter(
             newItems.add(FeedSchedulesListItem("actual", scheduleState.items))
         }
 
-        if (state.donationCardItemState != null && state.data.data != null) {
-            newItems.add(DonationCardListItem(state.donationCardItemState))
-        }
-
         val feedItems = loadingState.data?.feedItems.orEmpty()
         if (feedItems.isNotEmpty()) {
             newItems.add(
@@ -137,7 +122,6 @@ class FeedAdapter(
             feedItems.forEach { data ->
                 val type = when {
                     data.release != null -> "release"
-                    data.youtube != null -> "youtube"
                     else -> throw IllegalStateException("Unknown item type")
                 }
                 val item = FeedListItem(data)

@@ -12,7 +12,6 @@ class AuthGuidedFragment : FakeGuidedStepFragment() {
     companion object {
         private const val CODE_ACTION_ID = 1L
         private const val CLASSIC_ACTION_ID = 2L
-        private const val SOCIAL_ACTION_ID = 3L
         private const val SKIP_ACTION_ID = 4L
     }
 
@@ -46,13 +45,6 @@ class AuthGuidedFragment : FakeGuidedStepFragment() {
                 .build()
         )
 
-        /*actions.add(
-            GuidedAction.Builder(requireContext())
-                .id(SOCIAL_ACTION_ID)
-                .title("Войти через ВКонтакте")
-                .build()
-        )*/
-
         actions.add(
             GuidedAction.Builder(requireContext())
                 .id(SKIP_ACTION_ID)
@@ -65,7 +57,6 @@ class AuthGuidedFragment : FakeGuidedStepFragment() {
         when (action.id) {
             CODE_ACTION_ID -> viewModel.onCodeClick()
             CLASSIC_ACTION_ID -> viewModel.onClassicClick()
-            SOCIAL_ACTION_ID -> viewModel.onSocialClick()
             SKIP_ACTION_ID -> viewModel.onSkipClick()
         }
     }

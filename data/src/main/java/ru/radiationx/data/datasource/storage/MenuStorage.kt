@@ -24,29 +24,14 @@ class MenuStorage @Inject constructor(
 
     private val defaultLocalMenu = listOf(
         LinkMenuItem(
-            "Группа VK",
-            absoluteLink = "https://vk.com/anilibria",
-            icon = DataIcons.VK
-        ),
-        LinkMenuItem(
             "Канал YouTube",
             absoluteLink = "https://youtube.com/channel/UCuF8ghQWaa7K-28llm-K3Zg",
             icon = DataIcons.YOUTUBE
         ),
         LinkMenuItem(
-            "Patreon",
-            absoluteLink = "https://patreon.com/anilibria",
-            icon = DataIcons.PATREON
-        ),
-        LinkMenuItem(
             "Канал Telegram",
             absoluteLink = "https://t.me/anilibria_tv",
             icon = DataIcons.TELEGRAM
-        ),
-        LinkMenuItem(
-            "Чат Discord",
-            absoluteLink = "https://discord.gg/Kdr5sNw",
-            icon = DataIcons.DISCORD
         ),
         LinkMenuItem(
             "Сайт AniLibria",

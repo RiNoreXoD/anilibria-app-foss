@@ -28,45 +28,6 @@
             app:srcCompat="@drawable/ic_logo_alib"
             app:tint="@color/alib_red" />
 
-        <TextView
-            android:id="@+id/authSocialTop"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:text="@string/auth_sign_with"
-            android:visibility="gone" />
-
-        <FrameLayout
-            android:id="@+id/authSocialContent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:orientation="horizontal"
-            android:visibility="gone">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/authSocialList"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                tools:itemCount="1"
-                tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_social_auth" />
-
-        </FrameLayout>
-
-        <TextView
-            android:id="@+id/authSocialBottom"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:text="@string/or"
-            android:visibility="gone" />
-
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.Design.TextInputLayout"
             android:layout_width="match_parent"

@@ -45,7 +45,6 @@ fun ReleaseResponse.toDomain(
         favoriteInfo = favorite?.toDomain() ?: FavoriteInfo(0, false),
         link = "${apiConfig.siteUrl}/release/${code}.html",
         franchises = franchises?.map { it.toDomain() }.orEmpty(),
-        showDonateDialog = showDonateDialog ?: false,
         blockedInfo = blockedInfo?.toDomain() ?: BlockedInfo(false, null),
         moonwalkLink = moonwalkLink,
         episodes = episodes?.mapNotNull { it.toOnlineDomain(releaseId) }.orEmpty(),

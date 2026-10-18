@@ -13,8 +13,6 @@ import ru.radiationx.data.entity.common.PlayerTransport
  */
 interface PreferencesHolder {
 
-    val newDonationRemind: AppPreference<Boolean>
-
     val releaseRemind: AppPreference<Boolean>
 
     val searchRemind: AppPreference<Boolean>

@@ -32,7 +32,6 @@ data class Release(
     val franchises: List<Franchise>,
 
     // full
-    val showDonateDialog: Boolean,
     val blockedInfo: BlockedInfo,
     val moonwalkLink: String?,
     val episodes: List<Episode>,

@@ -37,19 +37,11 @@ class LibriaCardViewHolder(
     private val cardReleaseWidth by lazy {
         containerView.context.resources.getDimension(R.dimen.card_release_width).toInt()
     }
-    private val cardYoutubeWidth by lazy {
-        containerView.context.resources.getDimension(R.dimen.card_youtube_width).toInt()
-    }
 
     fun bind(item: LibriaCard) {
         when (item.type) {
             is LibriaCard.Type.Release -> containerView.setMainImageDimensions(
                 cardReleaseWidth,
-                cardHeight
-            )
-
-            is LibriaCard.Type.Youtube -> containerView.setMainImageDimensions(
-                cardYoutubeWidth,
                 cardHeight
             )
         }

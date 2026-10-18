@@ -1,13 +1,10 @@
 package ru.radiationx.anilibria.ui.adapters
 
-import ru.radiationx.anilibria.model.DonationCardItemState
 import ru.radiationx.anilibria.model.FeedItemState
 import ru.radiationx.anilibria.model.ReleaseItemState
 import ru.radiationx.anilibria.model.ScheduleItemState
-import ru.radiationx.anilibria.model.SocialAuthItemState
 import ru.radiationx.anilibria.model.SuggestionItemState
 import ru.radiationx.anilibria.model.SuggestionLocalItemState
-import ru.radiationx.anilibria.model.YoutubeItemState
 import ru.radiationx.anilibria.ui.activities.main.MainActivity
 import ru.radiationx.anilibria.ui.adapters.release.detail.EpisodeControlPlace
 import ru.radiationx.anilibria.ui.fragments.feed.FeedAppWarning
@@ -98,7 +95,6 @@ data class ReleaseEpisodesHeadListItem(
     val selectedTag: String?,
 ) : ListItem(id)
 
-data class ReleaseDonateListItem(val state: DonationCardItemState) : ListItem(state.tag)
 data class ReleaseRemindListItem(val text: String) : ListItem(text)
 data class ReleaseBlockedListItem(val state: ReleaseBlockedInfoState) : ListItem(state.title)
 data class ReleaseHeadListItem(
@@ -113,10 +109,6 @@ data class ReleaseHeadListItem(
 data class SuggestionLocalListItem(val state: SuggestionLocalItemState) : ListItem(state.id)
 
 data class SuggestionListItem(val state: SuggestionItemState) : ListItem(state.id)
-
-data class YoutubeListItem(val state: YoutubeItemState) : ListItem(state.id)
-
-data class SocialAuthListItem(val state: SocialAuthItemState) : ListItem(state.key)
 
 data class FeedScheduleListItem(val state: ScheduleItemState) : ListItem(state.release.id)
 data class FeedSchedulesListItem(val id: Any, val items: List<ScheduleItemState>) : ListItem(id)
@@ -135,7 +127,6 @@ data class FeedListItem(val item: FeedItemState) :
 data class FeedRandomBtnListItem(val id: Any) : ListItem(id)
 data class AppInfoCardListItem(val warning: FeedAppWarning) : ListItem(warning.tag)
 data class AppWarningCardListItem(val warning: FeedAppWarning) : ListItem(warning.tag)
-data class DonationCardListItem(val state: DonationCardItemState) : ListItem(state.tag)
 
 
 /* Player */

@@ -1,7 +1,6 @@
 package ru.radiationx.anilibria.ui.fragments.release.details
 
 import kotlinx.coroutines.flow.MutableStateFlow
-import ru.radiationx.anilibria.model.DonationCardItemState
 import ru.radiationx.data.entity.domain.types.EpisodeId
 import ru.radiationx.data.entity.domain.types.ReleaseId
 import ru.radiationx.data.entity.domain.types.TorrentId
@@ -11,7 +10,6 @@ data class ReleaseDetailScreenState(
     val data: ReleaseDetailState? = null,
     val modifiers: ReleaseDetailModifiersState = ReleaseDetailModifiersState(),
     val remindText: String? = null,
-    val donationCardState: DonationCardItemState? = null,
 )
 
 data class EpisodesTabState(

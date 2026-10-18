@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import ru.radiationx.anilibria.model.DonationCardItemState
 import ru.radiationx.anilibria.navigation.Screens
 import ru.radiationx.anilibria.presentation.common.IErrorHandler
 import ru.radiationx.anilibria.presentation.common.ILinkHandler
@@ -38,7 +37,6 @@ import ru.radiationx.data.entity.domain.types.EpisodeId
 import ru.radiationx.data.entity.domain.types.TorrentId
 import ru.radiationx.data.interactors.ReleaseInteractor
 import ru.radiationx.data.repository.AuthRepository
-import ru.radiationx.data.repository.DonationRepository
 import ru.radiationx.data.repository.FavoriteRepository
 import ru.radiationx.shared.ktx.EventFlow
 import ru.radiationx.shared.ktx.coRunCatching
@@ -51,7 +49,6 @@ class ReleaseInfoViewModel @Inject constructor(
     private val releaseInteractor: ReleaseInteractor,
     private val authRepository: AuthRepository,
     private val favoriteRepository: FavoriteRepository,
-    donationRepository: DonationRepository,
     private val router: Router,
     private val linkHandler: ILinkHandler,
     private val errorHandler: IErrorHandler,
@@ -76,7 +73,6 @@ class ReleaseInfoViewModel @Inject constructor(
     val playWebAction = EventFlow<ActionPlayWeb>()
     val playEpisodeAction = EventFlow<ActionPlayEpisode>()
     val showUnauthAction = EventFlow<Unit>()
-    val showFileDonateAction = EventFlow<String>()
     val showEpisodesMenuAction = EventFlow<Unit>()
     val showContextEpisodeAction = EventFlow<Episode>()
     val openDownloadedFileAction = EventFlow<LocalFile>()
@@ -91,23 +87,6 @@ class ReleaseInfoViewModel @Inject constructor(
     }
 
     init {
-        donationRepository
-            .observerDonationInfo()
-            .onEach { info ->
-                _state.update { state ->
-                    val newCardState = info.cardRelease?.let {
-                        DonationCardItemState(
-                            tag = "donate",
-                            title = it.title,
-                            subtitle = it.subtitle,
-                            canClose = false
-                        )
-                    }
-                    state.copy(donationCardState = newCardState)
-                }
-            }
-            .launchIn(viewModelScope)
-
         appPreferences
             .episodesIsReverse
             .onEach { episodesReversed ->
@@ -376,12 +355,6 @@ class ReleaseInfoViewModel @Inject constructor(
         }
     }
 
-    fun onClickDonate() {
-        currentData?.also {
-            router.navigateTo(Screens.DonationDetail())
-        }
-    }
-
     fun onClickFav() {
         val releaseId = currentData?.id ?: return
         val favInfo = currentData?.favoriteInfo ?: return
@@ -445,34 +418,16 @@ class ReleaseInfoViewModel @Inject constructor(
             ReleaseInfoState.TAG_GENRE -> {
                 router.navigateTo(Screens.Catalog(value))
             }
-
-            ReleaseInfoState.TAG_VOICE -> {
-                router.navigateTo(Screens.Teams(value))
-            }
         }
     }
 
     fun onDownloadLinkSelected(url: String) {
-        currentData?.also {
-            if (it.showDonateDialog) {
-                showFileDonateAction.set(url)
-            } else {
-                downloadFile(url)
-            }
-        }
+        downloadFile(url)
     }
 
     fun downloadFile(url: String) {
         val data = currentData ?: return
         systemUtils.externalLink(url)
-    }
-
-    fun onDialogPatreonClick() {
-        systemUtils.externalLink("https://www.patreon.com/anilibria")
-    }
-
-    fun onDialogDonateClick() {
-        router.navigateTo(Screens.DonationDetail())
     }
 
     fun onResetEpisodesHistoryClick() {

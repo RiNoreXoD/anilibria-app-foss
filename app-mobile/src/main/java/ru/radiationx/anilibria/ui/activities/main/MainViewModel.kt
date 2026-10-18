@@ -15,7 +15,6 @@ import ru.radiationx.data.datasource.remote.address.ApiConfig
 import ru.radiationx.data.entity.common.AuthState
 import ru.radiationx.data.repository.AuthRepository
 import ru.radiationx.data.repository.ConfigurationRepository
-import ru.radiationx.data.repository.DonationRepository
 import ru.radiationx.shared.ktx.EventFlow
 import ru.radiationx.shared.ktx.coRunCatching
 import com.github.terrakok.cicerone.Router
@@ -32,7 +31,6 @@ data class MainScreenState(
 class MainViewModel @Inject constructor(
     private val router: Router,
     private val authRepository: AuthRepository,
-    private val donationRepository: DonationRepository,
     private val configurationRepository: ConfigurationRepository,
     private val apiConfig: ApiConfig,
 ) : ViewModel() {
@@ -86,13 +84,6 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             coRunCatching {
                 authRepository.loadUser()
-            }.onFailure {
-                Timber.e(it)
-            }
-        }
-        viewModelScope.launch {
-            coRunCatching {
-                donationRepository.requestUpdate()
             }.onFailure {
                 Timber.e(it)
             }

@@ -6,7 +6,6 @@ import ru.radiationx.anilibria.common.CachedRowsFragmentFactory
 import ru.radiationx.anilibria.screen.main.MainFragment
 import ru.radiationx.anilibria.screen.profile.ProfileFragment
 import ru.radiationx.anilibria.screen.watching.WatchingFragment
-import ru.radiationx.anilibria.screen.youtube.YoutubeFragment
 
 class MainPagesFragmentFactory : CachedRowsFragmentFactory() {
 
@@ -16,7 +15,6 @@ class MainPagesFragmentFactory : CachedRowsFragmentFactory() {
         const val ID_SERIES = 3L
         const val ID_MOVIES = 4L
         const val ID_SEARCH = 5L
-        const val ID_YOUTUBE = 6L
         const val ID_PROFILE = 7L
 
         val ids = listOf(
@@ -25,7 +23,6 @@ class MainPagesFragmentFactory : CachedRowsFragmentFactory() {
             //ID_SERIES,
             //ID_MOVIES,
             //ID_SEARCH,
-            //ID_YOUTUBE,
             ID_PROFILE
         )
 
@@ -35,7 +32,6 @@ class MainPagesFragmentFactory : CachedRowsFragmentFactory() {
             ID_SERIES to "Сериалы",
             ID_MOVIES to "Фильмы",
             ID_SEARCH to "Поиск",
-            ID_YOUTUBE to "YouTube",
             ID_PROFILE to "Профиль"
         )
     }
@@ -44,7 +40,6 @@ class MainPagesFragmentFactory : CachedRowsFragmentFactory() {
         val fragment = when (row.id) {
             ID_MAIN -> MainFragment()
             ID_MY -> WatchingFragment()
-            ID_YOUTUBE -> YoutubeFragment()
             ID_PROFILE -> ProfileFragment()
             else -> super.getFragmentByRow(row)
         }

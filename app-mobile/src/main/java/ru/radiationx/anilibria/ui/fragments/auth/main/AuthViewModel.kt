@@ -10,8 +10,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import ru.radiationx.anilibria.model.SocialAuthItemState
-import ru.radiationx.anilibria.model.toState
 import ru.radiationx.anilibria.navigation.Screens
 import ru.radiationx.anilibria.presentation.common.IErrorHandler
 import ru.radiationx.anilibria.utils.messages.SystemMessenger
@@ -49,25 +47,6 @@ class AuthViewModel @Inject constructor(
             }
             .launchIn(viewModelScope)
 
-        authRepository
-            .observeSocialAuth()
-            .onEach { socialAuth ->
-                val items = socialAuth.map { it.toState() }
-                _state.update { it.copy(socialItems = items) }
-            }
-            .launchIn(viewModelScope)
-
-        viewModelScope.launch {
-            coRunCatching {
-                authRepository.loadSocialAuth()
-            }.onFailure {
-                errorHandler.handle(it)
-            }
-        }
-    }
-
-    fun onSocialClick(item: SocialAuthItemState) {
-        router.navigateTo(Screens.AuthSocial(item.key))
     }
 
     fun setLogin(login: String) {
@@ -148,5 +127,4 @@ data class AuthInputData(
 data class AuthScreenState(
     val actionEnabled: Boolean = false,
     val sending: Boolean = false,
-    val socialItems: List<SocialAuthItemState> = emptyList(),
 )

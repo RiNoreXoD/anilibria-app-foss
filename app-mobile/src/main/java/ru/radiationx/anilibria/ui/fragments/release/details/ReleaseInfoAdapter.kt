@@ -3,13 +3,11 @@ package ru.radiationx.anilibria.ui.fragments.release.details
 /* Created by radiationx on 18.11.17. */
 
 import ru.radiationx.anilibria.R
-import ru.radiationx.anilibria.model.DonationCardItemState
 import ru.radiationx.anilibria.ui.adapters.CommentRouteListItem
 import ru.radiationx.anilibria.ui.adapters.DividerShadowListItem
 import ru.radiationx.anilibria.ui.adapters.FeedSectionListItem
 import ru.radiationx.anilibria.ui.adapters.ListItem
 import ru.radiationx.anilibria.ui.adapters.ReleaseBlockedListItem
-import ru.radiationx.anilibria.ui.adapters.ReleaseDonateListItem
 import ru.radiationx.anilibria.ui.adapters.ReleaseEpisodeControlItem
 import ru.radiationx.anilibria.ui.adapters.ReleaseEpisodeListItem
 import ru.radiationx.anilibria.ui.adapters.ReleaseEpisodesHeadListItem
@@ -22,7 +20,6 @@ import ru.radiationx.anilibria.ui.adapters.global.CommentRouteDelegate
 import ru.radiationx.anilibria.ui.adapters.other.DividerShadowItemDelegate
 import ru.radiationx.anilibria.ui.adapters.release.detail.EpisodeControlPlace
 import ru.radiationx.anilibria.ui.adapters.release.detail.ReleaseBlockedDelegate
-import ru.radiationx.anilibria.ui.adapters.release.detail.ReleaseDonateDelegate
 import ru.radiationx.anilibria.ui.adapters.release.detail.ReleaseEpisodeControlDelegate
 import ru.radiationx.anilibria.ui.adapters.release.detail.ReleaseEpisodeDelegate
 import ru.radiationx.anilibria.ui.adapters.release.detail.ReleaseEpisodesHeadDelegate
@@ -37,8 +34,6 @@ class ReleaseInfoAdapter(
     headListener: ReleaseHeadDelegate.Listener,
     episodeListener: ReleaseEpisodeDelegate.Listener,
     episodeControlListener: ReleaseEpisodeControlDelegate.Listener,
-    donationListener: (DonationCardItemState) -> Unit,
-    donationCloseListener: (DonationCardItemState) -> Unit,
     torrentClickListener: (TorrentId) -> Unit,
     torrentCancelClickListener: (TorrentId) -> Unit,
     commentsClickListener: () -> Unit,
@@ -63,7 +58,6 @@ class ReleaseInfoAdapter(
         addDelegate(ReleaseTorrentDelegate(torrentClickListener, torrentCancelClickListener))
         addDelegate(ReleaseEpisodeControlDelegate(episodeControlListener))
         addDelegate(ReleaseEpisodesHeadDelegate(episodesTabListener))
-        addDelegate(ReleaseDonateDelegate(donationListener, donationCloseListener))
         addDelegate(ReleaseRemindDelegate(remindCloseListener))
         addDelegate(ReleaseBlockedDelegate())
         addDelegate(CommentRouteDelegate(commentsClickListener))
@@ -108,11 +102,6 @@ class ReleaseInfoAdapter(
         if (releaseState.blockedInfo != null) {
             newItems.add(ReleaseBlockedListItem(releaseState.blockedInfo))
             newItems.add(DividerShadowListItem(ShadowDirection.Double, "blocked"))
-        }
-
-        if (releaseState.blockedInfo == null && screenState.donationCardState != null) {
-            newItems.add(ReleaseDonateListItem(screenState.donationCardState))
-            newItems.add(DividerShadowListItem(ShadowDirection.Double, "donate"))
         }
 
         if (releaseState.torrents.isNotEmpty()) {

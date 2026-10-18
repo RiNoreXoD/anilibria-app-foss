@@ -67,10 +67,6 @@
         <item name="bg_fav_btn">@drawable/bg_btn_favorite_light</item>
         <item name="bg_release_remind">@drawable/bg_release_remind_light</item>
         <item name="bg_schedule_day">@drawable/bg_schedule_day_light</item>
-        <item name="bgDonationIconPt">@drawable/bg_donation_icon_pt_light</item>
-        <item name="bgDonationIconBt">@drawable/bg_donation_icon_bt_light</item>
-        <item name="bgDonationIconYm">@drawable/bg_donation_icon_ym_light</item>
-        <item name="bgDonationIconDa">@drawable/bg_donation_icon_da_light</item>
 
         <item name="textDefault">@color/light_textDefault</item>
         <item name="textSecond">@color/light_textSecond</item>
@@ -167,11 +163,6 @@
         <item name="cornerSizeTopLeft">8dp</item>
         <item name="cornerSizeBottomRight">0dp</item>
         <item name="cornerSizeBottomLeft">0dp</item>
-    </style>
-
-    <style name="YooMoneyThemeOverlay">
-        <item name="colorPrimary">@color/brand_yoomoney</item>
-        <item name="colorSecondary">@color/brand_yoomoney</item>
     </style>
 
     <style name="ShapeAppearance.Avatar" parent="">

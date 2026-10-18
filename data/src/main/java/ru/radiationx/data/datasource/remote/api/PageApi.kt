@@ -20,8 +20,6 @@ class PageApi @Inject constructor(
     private val moshi: Moshi
 ) {
     companion object {
-        const val PAGE_PATH_TEAM = "pages/team.php"
-        const val PAGE_PATH_DONATE = "pages/donate.php"
 
     }
 

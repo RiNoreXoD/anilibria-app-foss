@@ -65,7 +65,6 @@ class VideoPlayerActivity : BaseActivity(R.layout.activity_videoplayer) {
         fun newIntent(context: Context, episodeId: EpisodeId) =
             Intent(context, VideoPlayerActivity::class.java).apply {
                 putExtra(ARG_EPISODE_ID, episodeId)
-                R.attr.bgDonationIconDa
             }
     }
 

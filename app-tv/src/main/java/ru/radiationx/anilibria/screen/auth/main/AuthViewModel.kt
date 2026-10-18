@@ -22,10 +22,6 @@ class AuthViewModel @Inject constructor(
         guidedRouter.open(AuthCredentialsGuidedScreen())
     }
 
-    fun onSocialClick() {
-
-    }
-
     fun onSkipClick() {
         viewModelScope.launch {
             authRepository.setAuthSkipped(true)

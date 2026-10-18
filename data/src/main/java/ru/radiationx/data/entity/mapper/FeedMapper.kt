@@ -11,10 +11,8 @@ fun FeedResponse.toDomain(
     apiConfig: ApiConfig
 ): FeedItem {
     val domainRelease = release?.toDomain(apiUtils, apiConfig)
-    val domainYoutube = youtube?.toDomain(apiUtils, apiConfig)
     return FeedItem(
-        id = FeedId(domainRelease?.id, domainYoutube?.id),
-        release = domainRelease,
-        youtube = domainYoutube
+        id = FeedId(domainRelease?.id),
+        release = domainRelease
     )
 }

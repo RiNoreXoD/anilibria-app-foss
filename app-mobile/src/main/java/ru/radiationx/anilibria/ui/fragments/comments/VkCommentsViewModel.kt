@@ -2,8 +2,6 @@ package ru.radiationx.anilibria.ui.fragments.comments
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.terrakok.cicerone.Router
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
@@ -13,11 +11,9 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import ru.radiationx.anilibria.navigation.Screens
 import ru.radiationx.anilibria.presentation.common.IErrorHandler
 import ru.radiationx.anilibria.ui.common.webpage.WebPageViewState
 import ru.radiationx.anilibria.ui.fragments.release.details.ReleaseExtra
-import ru.radiationx.data.datasource.holders.AuthHolder
 import ru.radiationx.data.interactors.ReleaseInteractor
 import ru.radiationx.data.repository.AuthRepository
 import ru.radiationx.data.repository.PageRepository
@@ -32,14 +28,8 @@ class VkCommentsViewModel @Inject constructor(
     authRepository: AuthRepository,
     private val pageRepository: PageRepository,
     private val releaseInteractor: ReleaseInteractor,
-    authHolder: AuthHolder,
-    private val router: Router,
     private val errorHandler: IErrorHandler,
 ) : ViewModel() {
-
-    private var isVisibleToUser = false
-    private var pendingAuthRequest: String? = null
-    private var authRequestJob: Job? = null
 
     private var hasJsError = false
     private var jsErrorClosed = false
@@ -60,11 +50,6 @@ class VkCommentsViewModel @Inject constructor(
     init {
         authRepository
             .observeAuthState()
-            .onEach { _reloadEvent.set(Unit) }
-            .launchIn(viewModelScope)
-
-        authHolder
-            .observeVkAuthChange()
             .onEach { _reloadEvent.set(Unit) }
             .launchIn(viewModelScope)
 
@@ -99,16 +84,6 @@ class VkCommentsViewModel @Inject constructor(
         _reloadEvent.set(Unit)
     }
 
-    fun setVisibleToUser(isVisible: Boolean) {
-        isVisibleToUser = isVisible
-        tryExecutePendingAuthRequest()
-    }
-
-    fun authRequest(url: String) {
-        pendingAuthRequest = url
-        tryExecutePendingAuthRequest()
-    }
-
     fun onPageLoaded() {
     }
 
@@ -140,17 +115,6 @@ class VkCommentsViewModel @Inject constructor(
 
     private fun updateVkBlockedState() {
         _state.update { it.copy(vkBlockedVisible = hasVkBlockedError && !vkBlockedErrorClosed) }
-    }
-
-    private fun tryExecutePendingAuthRequest() {
-        authRequestJob?.cancel()
-        authRequestJob = viewModelScope.launch {
-            val url = pendingAuthRequest
-            if (isVisibleToUser && url != null) {
-                pendingAuthRequest = null
-                router.navigateTo(Screens.Auth(Screens.AuthVk(url)))
-            }
-        }
     }
 
     private suspend fun getDataSource(): VkCommentsState {

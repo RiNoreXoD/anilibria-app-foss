@@ -136,16 +136,6 @@ class VkCommentsFragment : BaseDimensionsFragment(R.layout.fragment_vk_comments)
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        viewModel.setVisibleToUser(false)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.setVisibleToUser(true)
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         binding.webView.setJsLifeCycleListener(null)

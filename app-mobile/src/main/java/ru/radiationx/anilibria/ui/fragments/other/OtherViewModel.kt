@@ -40,8 +40,6 @@ class OtherViewModel @Inject constructor(
 
     companion object {
         const val MENU_HISTORY = 0
-        const val MENU_TEAM = 1
-        const val MENU_DONATE = 2
         const val MENU_SETTINGS = 3
         const val MENU_OTP_CODE = 4
     }
@@ -62,9 +60,7 @@ class OtherViewModel @Inject constructor(
         )
     )
     private val allMainMenu = listOf(
-        OtherMenuItem(MENU_HISTORY, "История", R.drawable.ic_history),
-        OtherMenuItem(MENU_TEAM, "Команда проекта", R.drawable.ic_account_multiple),
-        OtherMenuItem(MENU_DONATE, "Поддержать", R.drawable.ic_gift)
+        OtherMenuItem(MENU_HISTORY, "История", R.drawable.ic_history)
     )
     private val allSystemMenu = listOf(
         OtherMenuItem(MENU_SETTINGS, "Настройки", R.drawable.ic_settings)
@@ -117,14 +113,6 @@ class OtherViewModel @Inject constructor(
         when (item.id) {
             MENU_HISTORY -> {
                 router.navigateTo(Screens.History())
-            }
-
-            MENU_TEAM -> {
-                router.navigateTo(Screens.Teams())
-            }
-
-            MENU_DONATE -> {
-                router.navigateTo(Screens.DonationDetail())
             }
 
             MENU_SETTINGS -> {

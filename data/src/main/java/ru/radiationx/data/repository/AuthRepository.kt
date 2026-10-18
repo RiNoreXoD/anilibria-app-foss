@@ -9,13 +9,11 @@ import kotlinx.coroutines.withContext
 import okhttp3.Cookie
 import ru.radiationx.data.datasource.holders.AuthHolder
 import ru.radiationx.data.datasource.holders.CookieHolder
-import ru.radiationx.data.datasource.holders.SocialAuthHolder
 import ru.radiationx.data.datasource.holders.UserHolder
 import ru.radiationx.data.datasource.remote.address.ApiConfig
 import ru.radiationx.data.datasource.remote.api.AuthApi
 import ru.radiationx.data.entity.common.AuthState
 import ru.radiationx.data.entity.domain.auth.OtpInfo
-import ru.radiationx.data.entity.domain.auth.SocialAuth
 import ru.radiationx.data.entity.domain.other.ProfileItem
 import ru.radiationx.data.entity.mapper.toDomain
 import ru.radiationx.shared.ktx.coRunCatching
@@ -29,7 +27,6 @@ class AuthRepository @Inject constructor(
     private val authApi: AuthApi,
     private val userHolder: UserHolder,
     private val authHolder: AuthHolder,
-    private val socialAuthHolder: SocialAuthHolder,
     private val apiConfig: ApiConfig,
     private val cookieHolder: CookieHolder,
 ) {
@@ -114,30 +111,6 @@ class AuthRepository @Inject constructor(
             userHolder.delete()
         }
     }
-
-    fun observeSocialAuth(): Flow<List<SocialAuth>> = socialAuthHolder
-        .observe()
-        .flowOn(Dispatchers.IO)
-
-    suspend fun loadSocialAuth(): List<SocialAuth> = withContext(Dispatchers.IO) {
-        authApi
-            .loadSocialAuth()
-            .map { it.toDomain() }
-            .also { socialAuthHolder.save(it) }
-    }
-
-    suspend fun getSocialAuth(key: String): SocialAuth =
-        withContext(Dispatchers.IO) {
-            socialAuthHolder.get().first { it.key == key }
-        }
-
-    suspend fun signInSocial(resultUrl: String, item: SocialAuth): ProfileItem =
-        withContext(Dispatchers.IO) {
-            authApi
-                .signInSocial(resultUrl, item)
-                .toDomain(apiConfig)
-                .also { updateUser(it) }
-        }
 
     private suspend fun updateUser(newUser: ProfileItem) {
         withContext(Dispatchers.IO) {
