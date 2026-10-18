@@ -3,7 +3,6 @@ package ru.radiationx.anilibria.ui.fragments.release.details
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.terrakok.cicerone.Router
-import com.yandex.mobile.ads.nativeads.NativeAdRequestConfiguration
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,25 +15,11 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withTimeout
-import ru.radiationx.anilibria.ads.NativeAdsRepository
 import ru.radiationx.anilibria.model.DonationCardItemState
 import ru.radiationx.anilibria.navigation.Screens
 import ru.radiationx.anilibria.presentation.common.IErrorHandler
 import ru.radiationx.anilibria.presentation.common.ILinkHandler
 import ru.radiationx.anilibria.ui.adapters.release.detail.EpisodeControlPlace
-import ru.radiationx.data.ads.AdsConfigRepository
-import ru.radiationx.data.analytics.AnalyticsConstants
-import ru.radiationx.data.analytics.features.AuthMainAnalytics
-import ru.radiationx.data.analytics.features.CatalogAnalytics
-import ru.radiationx.data.analytics.features.DonationDetailAnalytics
-import ru.radiationx.data.analytics.features.PlayerAnalytics
-import ru.radiationx.data.analytics.features.ReleaseAnalytics
-import ru.radiationx.data.analytics.features.ScheduleAnalytics
-import ru.radiationx.data.analytics.features.TeamsAnalytics
-import ru.radiationx.data.analytics.features.WebPlayerAnalytics
-import ru.radiationx.data.analytics.features.mapper.toAnalyticsQuality
-import ru.radiationx.data.analytics.features.model.AnalyticsPlayer
 import ru.radiationx.data.datasource.holders.PreferencesHolder
 import ru.radiationx.data.downloader.LocalFile
 import ru.radiationx.data.downloader.RemoteFile
@@ -73,17 +58,7 @@ class ReleaseInfoViewModel @Inject constructor(
     private val systemUtils: SystemUtils,
     private val appPreferences: PreferencesHolder,
     private val commentsNotifier: ReleaseCommentsNotifier,
-    private val authMainAnalytics: AuthMainAnalytics,
-    private val catalogAnalytics: CatalogAnalytics,
-    private val scheduleAnalytics: ScheduleAnalytics,
-    private val webPlayerAnalytics: WebPlayerAnalytics,
-    private val releaseAnalytics: ReleaseAnalytics,
-    private val playerAnalytics: PlayerAnalytics,
-    private val donationDetailAnalytics: DonationDetailAnalytics,
-    private val teamsAnalytics: TeamsAnalytics,
     private val remoteFileRepository: RemoteFileRepository,
-    private val adsConfigRepository: AdsConfigRepository,
-    private val nativeAdsRepository: NativeAdsRepository,
 ) : ViewModel() {
 
     private val remindText =
@@ -158,26 +133,6 @@ class ReleaseInfoViewModel @Inject constructor(
             updateLocalRelease(it, _currentLoadings.value, emptyMap())
         }
         observeRelease()
-
-        viewModelScope.launch {
-            coRunCatching {
-                val config = adsConfigRepository.getConfig().releaseNative
-                if (!config.enabled) return@coRunCatching
-                val releaseTags = _state.mapNotNull { it.data?.info }.first().let {
-                    listOf(it.titleRus, it.titleEng)
-                }
-                val contextTags = config.contextTags + releaseTags
-                val request = NativeAdRequestConfiguration.Builder(config.unitId)
-                    .setContextTags(contextTags)
-                    .build()
-                val nativeAd = withTimeout(config.timeoutMillis) {
-                    nativeAdsRepository.load(request)
-                }
-                _state.update { it.copy(nativeAd = nativeAd) }
-            }.onFailure {
-                Timber.e(it, "Error while load ads for release")
-            }
-        }
     }
 
     private fun observeRelease() {
@@ -217,14 +172,12 @@ class ReleaseInfoViewModel @Inject constructor(
 
     fun markEpisodeUnviewed(episode: Episode) {
         viewModelScope.launch {
-            releaseAnalytics.historyResetEpisode()
             releaseInteractor.markUnViewed(episode.id)
         }
     }
 
     fun onEpisodeTabClick(tabTag: String) {
         currentData?.let { release ->
-            releaseAnalytics.episodesTabClick(release.id.id, tabTag)
         }
         updateModifiers {
             it.copy(selectedEpisodesTabTag = tabTag)
@@ -238,7 +191,6 @@ class ReleaseInfoViewModel @Inject constructor(
     fun onTorrentClick(id: TorrentId, action: TorrentAction) {
         val torrentItem = currentData?.torrents?.find { it.id == id } ?: return
         val isHevc = torrentItem.quality?.contains("HEVC", true) == true
-        releaseAnalytics.torrentClick(isHevc, torrentItem.id.id)
         when (action) {
             TorrentAction.Open, TorrentAction.Share -> loadTorrent(torrentItem, action)
             TorrentAction.OpenUrl -> systemUtils.externalLink(torrentItem.url.orEmpty())
@@ -284,14 +236,12 @@ class ReleaseInfoViewModel @Inject constructor(
 
     fun onCommentsClick() {
         currentData?.also {
-            releaseAnalytics.commentsClick(it.id.id)
         }
         commentsNotifier.requireOpen()
     }
 
     fun onClickWatchWeb() {
         currentData?.also { release ->
-            releaseAnalytics.webPlayerClick(release.id.id)
             release.moonwalkLink?.let {
                 playWebAction.set(ActionPlayWeb(it, release.code.code))
             }
@@ -301,9 +251,7 @@ class ReleaseInfoViewModel @Inject constructor(
     fun onPlayAllClick(place: EpisodeControlPlace) {
         val release = currentData ?: return
         place.handle({
-            releaseAnalytics.episodesTopStartClick(release.id.id)
         }, {
-            releaseAnalytics.episodesStartClick(release.id.id)
         })
         release.episodes.lastOrNull()?.also {
             playEpisodeAction.set(ActionPlayEpisode(it.id))
@@ -313,25 +261,13 @@ class ReleaseInfoViewModel @Inject constructor(
     fun onClickContinue(place: EpisodeControlPlace) {
         val release = currentData ?: return
         place.handle({
-            releaseAnalytics.episodesTopContinueClick(release.id.id)
         }, {
-            releaseAnalytics.episodesContinueClick(release.id.id)
         })
         viewModelScope.launch {
             releaseInteractor.getAccesses(release.id).maxByOrNull { it.lastAccessRaw }?.also {
                 playEpisodeAction.set(ActionPlayEpisode(it.id))
             }
         }
-    }
-
-    fun submitPlayerOpenAnalytics(episodeId: EpisodeId) {
-        val quality = appPreferences.playerQuality.value.toAnalyticsQuality()
-        playerAnalytics.open(
-            AnalyticsConstants.screen_release,
-            AnalyticsPlayer.INTERNAL,
-            quality,
-            episodeId
-        )
     }
 
     fun onClickEpisodesMenu() {
@@ -344,7 +280,6 @@ class ReleaseInfoViewModel @Inject constructor(
         release: Release,
         episode: RutubeEpisode,
     ) {
-        releaseAnalytics.episodeRutubeClick(release.id.id)
         playWebAction.set(ActionPlayWeb(episode.url, release.code.code))
     }
 
@@ -353,7 +288,6 @@ class ReleaseInfoViewModel @Inject constructor(
         release: Release,
         episode: ExternalEpisode,
     ) {
-        releaseAnalytics.episodeExternalClick(release.id.id, episodeState.tag)
         episode.url?.also { systemUtils.externalLink(it) }
     }
 
@@ -364,8 +298,6 @@ class ReleaseInfoViewModel @Inject constructor(
     ) {
         val savedQuality = appPreferences.playerQuality.value
         val finalQuality = quality ?: savedQuality
-        val analyticsQuality = savedQuality.toAnalyticsQuality()
-        releaseAnalytics.episodeDownloadClick(analyticsQuality, release.id.id)
         val url = episode.qualityInfo.getUrlFor(finalQuality) ?: return
         onDownloadLinkSelected(url)
     }
@@ -375,8 +307,6 @@ class ReleaseInfoViewModel @Inject constructor(
         episode: Episode,
     ) {
         val savedQuality = appPreferences.playerQuality.value
-        val analyticsQuality = savedQuality.toAnalyticsQuality()
-        releaseAnalytics.episodePlayClick(analyticsQuality, release.id.id)
         playEpisodeAction.set(ActionPlayEpisode(episode.id))
     }
 
@@ -439,7 +369,6 @@ class ReleaseInfoViewModel @Inject constructor(
 
     fun onClickLink(url: String) {
         currentData?.also {
-            releaseAnalytics.descriptionLinkClick(it.id.id)
             val handled = linkHandler.handle(url, router)
             if (!handled) {
                 systemUtils.externalLink(url)
@@ -449,8 +378,6 @@ class ReleaseInfoViewModel @Inject constructor(
 
     fun onClickDonate() {
         currentData?.also {
-            releaseAnalytics.donateClick(it.id.id)
-            donationDetailAnalytics.open(AnalyticsConstants.screen_release)
             router.navigateTo(Screens.DonationDetail())
         }
     }
@@ -465,9 +392,7 @@ class ReleaseInfoViewModel @Inject constructor(
             }
 
             if (favInfo.isAdded) {
-                releaseAnalytics.favoriteRemove(releaseId.id)
             } else {
-                releaseAnalytics.favoriteAdd(releaseId.id)
             }
             updateModifiers {
                 it.copy(favoriteRefreshing = true)
@@ -496,9 +421,7 @@ class ReleaseInfoViewModel @Inject constructor(
 
     fun onScheduleClick(day: Int) {
         currentData?.also {
-            releaseAnalytics.scheduleClick(it.id.id)
         }
-        scheduleAnalytics.open(AnalyticsConstants.screen_release)
         router.navigateTo(Screens.Schedule(day))
     }
 
@@ -508,13 +431,11 @@ class ReleaseInfoViewModel @Inject constructor(
         }
         currentData?.also {
             if (_state.value.modifiers.descriptionExpanded) {
-                releaseAnalytics.descriptionExpand(it.id.id)
             }
         }
     }
 
     fun openAuth() {
-        authMainAnalytics.open(AnalyticsConstants.screen_release)
         router.navigateTo(Screens.Auth())
     }
 
@@ -522,14 +443,10 @@ class ReleaseInfoViewModel @Inject constructor(
         val data = currentData ?: return
         when (tag) {
             ReleaseInfoState.TAG_GENRE -> {
-                releaseAnalytics.genreClick(data.id.id)
-                catalogAnalytics.open(AnalyticsConstants.screen_release)
                 router.navigateTo(Screens.Catalog(value))
             }
 
             ReleaseInfoState.TAG_VOICE -> {
-                releaseAnalytics.voiceClick(data.id.id)
-                teamsAnalytics.open(AnalyticsConstants.screen_release)
                 router.navigateTo(Screens.Teams(value))
             }
         }
@@ -547,7 +464,6 @@ class ReleaseInfoViewModel @Inject constructor(
 
     fun downloadFile(url: String) {
         val data = currentData ?: return
-        releaseAnalytics.episodeDownloadByUrl(data.id.id)
         systemUtils.externalLink(url)
     }
 
@@ -561,7 +477,6 @@ class ReleaseInfoViewModel @Inject constructor(
 
     fun onResetEpisodesHistoryClick() {
         viewModelScope.launch {
-            releaseAnalytics.historyReset()
             currentData?.also {
                 releaseInteractor.resetAccessHistory(it.id)
             }
@@ -571,14 +486,12 @@ class ReleaseInfoViewModel @Inject constructor(
     fun onCheckAllEpisodesHistoryClick() {
         val release = currentData ?: return
         viewModelScope.launch {
-            releaseAnalytics.historyViewAll()
             releaseInteractor.markAllViewed(release.id)
         }
     }
 
     fun onWebPlayerClick() {
         currentData?.also {
-            webPlayerAnalytics.open(AnalyticsConstants.screen_release, it.id.id)
         }
     }
 

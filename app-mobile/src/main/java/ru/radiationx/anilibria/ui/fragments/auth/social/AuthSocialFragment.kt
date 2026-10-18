@@ -16,7 +16,7 @@ import ru.radiationx.anilibria.ui.common.webpage.WebPageStateWebViewClient
 import ru.radiationx.anilibria.ui.common.webpage.WebPageViewState
 import ru.radiationx.anilibria.ui.common.webpage.compositeWebViewClientOf
 import ru.radiationx.anilibria.ui.fragments.BaseToolbarFragment
-import ru.radiationx.anilibria.ui.fragments.auth.AnalyticsWebViewClient
+import ru.radiationx.anilibria.ui.fragments.auth.PageErrorWebViewClient
 import ru.radiationx.anilibria.ui.fragments.auth.AuthPatternWebViewClient
 import ru.radiationx.data.datasource.remote.address.ApiConfig
 import ru.radiationx.quill.inject
@@ -24,7 +24,6 @@ import ru.radiationx.quill.viewModel
 import ru.radiationx.shared.ktx.android.getExtraNotNull
 import ru.radiationx.shared.ktx.android.launchInResumed
 import ru.radiationx.shared.ktx.android.setWebViewClientCompat
-import ru.radiationx.shared_app.analytics.LifecycleTimeCounter
 import ru.radiationx.shared_app.common.SystemUtils
 import taiwa.TaiwaAction
 import taiwa.bottomsheet.bottomSheetTaiwa
@@ -50,8 +49,8 @@ class AuthSocialFragment :
         AuthPatternWebViewClient(viewModel::onSuccessAuthResult)
     }
 
-    private val analyticsWebViewClient by lazy {
-        AnalyticsWebViewClient(viewModel::sendAnalyticsPageError)
+    private val pageErrorWebViewClient by lazy {
+        PageErrorWebViewClient(viewModel::onPageError)
     }
 
     private val webPageWebViewClient by lazy {
@@ -61,13 +60,9 @@ class AuthSocialFragment :
     private val compositeWebViewClient by lazy {
         compositeWebViewClientOf(
             authPatternWebViewClient,
-            analyticsWebViewClient,
+            pageErrorWebViewClient,
             webPageWebViewClient
         )
-    }
-
-    private val useTimeCounter by lazy {
-        LifecycleTimeCounter(viewModel::submitUseTime)
     }
 
     private val viewModel by viewModel<AuthSocialViewModel> {
@@ -106,7 +101,6 @@ class AuthSocialFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewLifecycleOwner.lifecycle.addObserver(useTimeCounter)
         baseBinding.appbarLayout.isGone = true
 
         binding.webView.apply {

@@ -14,9 +14,6 @@ import ru.radiationx.anilibria.apptheme.AppThemeController
 import ru.radiationx.anilibria.apptheme.AppThemeMode
 import ru.radiationx.anilibria.navigation.Screens
 import ru.radiationx.data.SharedBuildConfig
-import ru.radiationx.data.analytics.AnalyticsConstants
-import ru.radiationx.data.analytics.features.SettingsAnalytics
-import ru.radiationx.data.analytics.features.mapper.toAnalyticsQuality
 import ru.radiationx.data.datasource.holders.PreferencesHolder
 import ru.radiationx.data.entity.common.PlayerQuality
 import ru.radiationx.data.entity.common.PlayerTransport
@@ -31,8 +28,6 @@ import taiwa.bottomsheet.bottomSheetTaiwa
 class SettingsFragment : BaseSettingFragment() {
 
     private val appPreferences by inject<PreferencesHolder>()
-
-    private val settingsAnalytics by inject<SettingsAnalytics>()
 
     private val sharedBuildConfig by inject<SharedBuildConfig>()
 
@@ -49,27 +44,6 @@ class SettingsFragment : BaseSettingFragment() {
         super.onCreate(savedInstanceState)
         addPreferencesFromResource(R.xml.preferences)
 
-        findPreference<SwitchPreferenceCompat>("notifications.all")?.apply {
-            setOnPreferenceChangeListener { _, newValue ->
-                (newValue as? Boolean)?.also(settingsAnalytics::notificationMainChange)
-                return@setOnPreferenceChangeListener true
-            }
-        }
-
-        findPreference<SwitchPreferenceCompat>("notifications.service")?.apply {
-            setOnPreferenceChangeListener { _, newValue ->
-                (newValue as? Boolean)?.also(settingsAnalytics::notificationSystemChange)
-                return@setOnPreferenceChangeListener true
-            }
-        }
-
-        findPreference<SwitchPreferenceCompat>("episodes_is_reverse")?.apply {
-            setOnPreferenceChangeListener { _, newValue ->
-                (newValue as? Boolean)?.also(settingsAnalytics::episodesOrderChange)
-                return@setOnPreferenceChangeListener true
-            }
-        }
-
         findPreference<Preference>("app_theme")?.apply {
             setOnPreferenceClickListener {
                 showThemeTaiwa()
@@ -79,7 +53,6 @@ class SettingsFragment : BaseSettingFragment() {
 
         findPreference<Preference>("player_quality")?.apply {
             setOnPreferenceClickListener {
-                settingsAnalytics.qualityClick()
                 showQualityTaiwa()
                 false
             }
@@ -99,8 +72,7 @@ class SettingsFragment : BaseSettingFragment() {
 
         findPreference<Preference>("about.check_update")?.apply {
             setOnPreferenceClickListener {
-                settingsAnalytics.checkUpdatesClick()
-                val intent = Screens.AppUpdateScreen(true, AnalyticsConstants.screen_settings)
+                val intent = Screens.AppUpdateScreen(true)
                     .createIntent(requireContext())
                 startActivity(intent)
                 false
@@ -168,7 +140,6 @@ class SettingsFragment : BaseSettingFragment() {
                         select(quality == currentValue)
                         action(TaiwaAction.Close)
                         onClick {
-                            settingsAnalytics.qualityChange(quality.toAnalyticsQuality())
                             appPreferences.playerQuality.value = quality
                         }
                     }

@@ -5,8 +5,6 @@ import com.github.terrakok.cicerone.Router
 import ru.radiationx.anilibria.navigation.BaseFragmentScreen
 import ru.radiationx.anilibria.navigation.Screens
 import ru.radiationx.anilibria.presentation.common.ILinkHandler
-import ru.radiationx.data.analytics.AnalyticsConstants
-import ru.radiationx.data.analytics.features.ReleaseAnalytics
 import ru.radiationx.data.entity.domain.types.ReleaseCode
 import java.util.regex.Pattern
 import javax.inject.Inject
@@ -15,7 +13,6 @@ import javax.inject.Inject
  * Created by radiationx on 03.02.18.
  */
 class LinkRouter @Inject constructor(
-    private val releaseAnalytics: ReleaseAnalytics,
 ) : ILinkHandler {
 
     private val releaseDetail by lazy {
@@ -29,7 +26,6 @@ class LinkRouter @Inject constructor(
     override fun handle(url: String, router: Router?, doNavigate: Boolean): Boolean {
         findScreen(url)?.also { screen ->
             if (doNavigate) {
-                sendNavigateAnalytics(screen)
                 router?.navigateTo(screen)
             }
             return true
@@ -72,14 +68,6 @@ class LinkRouter @Inject constructor(
         if (segments.getOrNull(1) != "releases") return null
         if (segments.getOrNull(2) != "release") return null
         return segments.getOrNull(3)
-    }
-
-    private fun sendNavigateAnalytics(screen: BaseFragmentScreen) {
-        when (screen) {
-            is Screens.ReleaseDetails -> {
-                releaseAnalytics.open(AnalyticsConstants.link_router, null, screen.code?.code)
-            }
-        }
     }
 
     private fun checkUnsupported(url: String): Boolean {

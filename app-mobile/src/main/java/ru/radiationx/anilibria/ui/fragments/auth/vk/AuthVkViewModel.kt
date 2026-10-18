@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.radiationx.anilibria.ui.common.webpage.WebPageViewState
 import ru.radiationx.anilibria.ui.fragments.auth.social.WebAuthSoFastDetector
-import ru.radiationx.data.analytics.features.AuthVkAnalytics
 import ru.radiationx.data.datasource.holders.AuthHolder
 import ru.radiationx.quill.QuillExtra
 import ru.radiationx.shared.ktx.EventFlow
@@ -23,7 +22,6 @@ class AuthVkViewModel @Inject constructor(
     private val argExtra: AuthVkExtra,
     private val authHolder: AuthHolder,
     private val router: Router,
-    private val authVkAnalytics: AuthVkAnalytics
 ) : ViewModel() {
 
     private val resultPattern =
@@ -74,14 +72,12 @@ class AuthVkViewModel @Inject constructor(
 
     fun onPageStateChanged(pageState: WebPageViewState) {
         if (pageState is WebPageViewState.Error) {
-            authVkAnalytics.error()
         }
         _state.update { it.copy(pageState = pageState) }
     }
 
     private fun successSignVk() {
         viewModelScope.launch {
-            authVkAnalytics.success()
             authHolder.changeVkAuth(true)
             router.exit()
         }

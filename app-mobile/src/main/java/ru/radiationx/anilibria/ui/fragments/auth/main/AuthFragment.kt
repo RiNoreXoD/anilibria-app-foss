@@ -19,7 +19,6 @@ import ru.radiationx.quill.inject
 import ru.radiationx.quill.viewModel
 import ru.radiationx.shared.ktx.android.addTextChangeListener
 import ru.radiationx.shared.ktx.android.launchInResumed
-import ru.radiationx.shared_app.analytics.LifecycleTimeCounter
 import ru.radiationx.shared_app.common.SystemUtils
 import taiwa.TaiwaAction
 import taiwa.bottomsheet.bottomSheetTaiwa
@@ -32,10 +31,6 @@ class AuthFragment : BaseToolbarFragment<FragmentAuthBinding>(R.layout.fragment_
 
     private val socialAuthAdapter = SocialAuthAdapter {
         onSocialClick(it)
-    }
-
-    private val lifecycleTimeCounter by lazy {
-        LifecycleTimeCounter(viewModel::submitUseTime)
     }
 
     private val viewModel by viewModel<AuthViewModel>()
@@ -72,7 +67,6 @@ class AuthFragment : BaseToolbarFragment<FragmentAuthBinding>(R.layout.fragment_
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewLifecycleOwner.lifecycle.addObserver(lifecycleTimeCounter)
         baseBinding.appbarLayout.isGone = true
 
         binding.authSocialList.apply {

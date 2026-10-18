@@ -13,14 +13,9 @@ import ru.radiationx.anilibria.R
 import ru.radiationx.anilibria.databinding.FragmentOtpBinding
 import ru.radiationx.quill.viewModel
 import ru.radiationx.shared.ktx.android.launchInResumed
-import ru.radiationx.shared_app.analytics.LifecycleTimeCounter
 import taiwa.dialogs.TaiwaDialogFragment
 
 class OtpAcceptDialogFragment : TaiwaDialogFragment(R.layout.fragment_otp) {
-
-    private val useTimeCounter by lazy {
-        LifecycleTimeCounter(viewModel::submitUseTime)
-    }
 
     private val binding by viewBinding<FragmentOtpBinding>()
 
@@ -28,7 +23,6 @@ class OtpAcceptDialogFragment : TaiwaDialogFragment(R.layout.fragment_otp) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewLifecycleOwner.lifecycle.addObserver(useTimeCounter)
         binding.otpTitle.setOnClickListener {
             binding.otpHelp.isVisible = !binding.otpHelp.isVisible
         }

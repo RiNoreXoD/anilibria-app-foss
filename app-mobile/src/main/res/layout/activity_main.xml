@@ -34,25 +34,6 @@
             android:overScrollMode="never"
             android:transitionGroup="true" />
 
-        <FrameLayout
-            android:id="@+id/bannerAdContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            tools:visibility="visible">
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:text="Реклама" />
-
-            <com.yandex.mobile.ads.banner.BannerAdView
-                android:id="@+id/bannerAdBview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </FrameLayout>
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.constraintlayout.widget.ConstraintLayout

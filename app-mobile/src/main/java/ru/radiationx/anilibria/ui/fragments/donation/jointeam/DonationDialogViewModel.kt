@@ -2,7 +2,6 @@ package ru.radiationx.anilibria.ui.fragments.donation.jointeam
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.mapNotNull
-import ru.radiationx.data.analytics.features.DonationDialogAnalytics
 import ru.radiationx.data.entity.domain.donation.DonationContentButton
 import ru.radiationx.data.repository.DonationRepository
 import ru.radiationx.quill.QuillExtra
@@ -16,7 +15,6 @@ data class DonationDialogExtra(
 class DonationDialogViewModel @Inject constructor(
     private val argExtra: DonationDialogExtra,
     donationRepository: DonationRepository,
-    private val analytics: DonationDialogAnalytics,
     private val systemUtils: SystemUtils,
 ) : ViewModel() {
 
@@ -27,12 +25,10 @@ class DonationDialogViewModel @Inject constructor(
         }
 
     fun onLinkClick(url: String) {
-        analytics.linkClick(argExtra.tag, url)
         systemUtils.externalLink(url)
     }
 
     fun onButtonClick(button: DonationContentButton) {
-        analytics.buttonClick(argExtra.tag, button.text)
         button.link?.also {
             systemUtils.externalLink(it)
         }

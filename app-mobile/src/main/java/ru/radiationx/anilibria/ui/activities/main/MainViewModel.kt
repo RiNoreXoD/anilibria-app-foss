@@ -11,16 +11,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import ru.radiationx.anilibria.navigation.Screens
-import ru.radiationx.data.ads.AdsConfigRepository
-import ru.radiationx.data.analytics.AnalyticsConstants
-import ru.radiationx.data.analytics.features.AuthMainAnalytics
-import ru.radiationx.data.analytics.features.CatalogAnalytics
-import ru.radiationx.data.analytics.features.FavoritesAnalytics
-import ru.radiationx.data.analytics.features.FeedAnalytics
-import ru.radiationx.data.analytics.features.OtherAnalytics
-import ru.radiationx.data.analytics.features.YoutubeVideosAnalytics
-import ru.radiationx.data.analytics.profile.AnalyticsProfile
-import ru.radiationx.data.ads.domain.AdsConfig
 import ru.radiationx.data.datasource.remote.address.ApiConfig
 import ru.radiationx.data.entity.common.AuthState
 import ru.radiationx.data.repository.AuthRepository
@@ -29,7 +19,6 @@ import ru.radiationx.data.repository.DonationRepository
 import ru.radiationx.shared.ktx.EventFlow
 import ru.radiationx.shared.ktx.coRunCatching
 import com.github.terrakok.cicerone.Router
-import com.github.terrakok.cicerone.Screen
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -38,7 +27,6 @@ data class MainScreenState(
     val selectedTab: String? = null,
     val needConfig: Boolean = false,
     val mainLogicCompleted: Boolean = false,
-    val adsConfig: AdsConfig? = null,
 )
 
 class MainViewModel @Inject constructor(
@@ -46,15 +34,7 @@ class MainViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val donationRepository: DonationRepository,
     private val configurationRepository: ConfigurationRepository,
-    private val adsConfigRepository: AdsConfigRepository,
     private val apiConfig: ApiConfig,
-    private val analyticsProfile: AnalyticsProfile,
-    private val authMainAnalytics: AuthMainAnalytics,
-    private val catalogAnalytics: CatalogAnalytics,
-    private val favoritesAnalytics: FavoritesAnalytics,
-    private val feedAnalytics: FeedAnalytics,
-    private val youtubeVideosAnalytics: YoutubeVideosAnalytics,
-    private val otherAnalytics: OtherAnalytics,
 ) : ViewModel() {
 
     private val defaultScreen = Screens.MainFeed().screenKey
@@ -67,8 +47,6 @@ class MainViewModel @Inject constructor(
     val updateTabsAction = EventFlow<Unit>()
 
     fun init(savedScreen: String?) {
-        analyticsProfile.update()
-
         apiConfig
             .observeNeedConfig()
             .distinctUntilChanged()
@@ -93,7 +71,6 @@ class MainViewModel @Inject constructor(
         // todo TR-274 move in scope after refactor screen
         runBlocking {
             if (authRepository.getAuthState() == AuthState.NO_AUTH) {
-                authMainAnalytics.open(AnalyticsConstants.screen_main)
                 router.navigateTo(Screens.Auth())
             }
         }
@@ -106,14 +83,6 @@ class MainViewModel @Inject constructor(
             .launchIn(viewModelScope)
         _state.update { it.copy(mainLogicCompleted = true) }
 
-        viewModelScope.launch {
-            coRunCatching {
-                val config = adsConfigRepository.getConfig()
-                _state.update { it.copy(adsConfig = config) }
-            }.onFailure {
-                Timber.e(it)
-            }
-        }
         viewModelScope.launch {
             coRunCatching {
                 authRepository.loadUser()
@@ -139,16 +108,6 @@ class MainViewModel @Inject constructor(
 
     fun selectTab(screenKey: String) {
         _state.update { it.copy(selectedTab = screenKey) }
-    }
-
-    fun submitScreenAnalytics(screen: Screen) {
-        when (screen) {
-            is Screens.Catalog -> catalogAnalytics.open(AnalyticsConstants.screen_main)
-            is Screens.Favorites -> favoritesAnalytics.open(AnalyticsConstants.screen_main)
-            is Screens.MainFeed -> feedAnalytics.open(AnalyticsConstants.screen_main)
-            is Screens.MainYouTube -> youtubeVideosAnalytics.open(AnalyticsConstants.screen_main)
-            is Screens.MainOther -> otherAnalytics.open(AnalyticsConstants.screen_main)
-        }
     }
 
 }

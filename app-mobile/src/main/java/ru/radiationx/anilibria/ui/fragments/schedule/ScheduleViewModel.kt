@@ -15,9 +15,6 @@ import ru.radiationx.anilibria.model.toState
 import ru.radiationx.anilibria.navigation.Screens
 import ru.radiationx.anilibria.presentation.common.IErrorHandler
 import ru.radiationx.anilibria.utils.ShortcutHelper
-import ru.radiationx.data.analytics.AnalyticsConstants
-import ru.radiationx.data.analytics.features.ReleaseAnalytics
-import ru.radiationx.data.analytics.features.ScheduleAnalytics
 import ru.radiationx.data.entity.domain.release.Release
 import ru.radiationx.data.entity.domain.schedule.ScheduleDay
 import ru.radiationx.data.entity.domain.types.ReleaseId
@@ -39,8 +36,6 @@ class ScheduleViewModel @Inject constructor(
     private val scheduleRepository: ScheduleRepository,
     private val router: Router,
     private val errorHandler: IErrorHandler,
-    private val scheduleAnalytics: ScheduleAnalytics,
-    private val releaseAnalytics: ReleaseAnalytics,
     private val systemUtils: SystemUtils,
     private val shortcutHelper: ShortcutHelper
 ) : ViewModel() {
@@ -84,32 +79,26 @@ class ScheduleViewModel @Inject constructor(
     }
 
     fun onHorizontalScroll(position: Int) {
-        scheduleAnalytics.horizontalScroll(position)
     }
 
     fun onItemClick(item: ScheduleItemState, position: Int) {
         val releaseItem = findRelease(item.release.id) ?: return
-        scheduleAnalytics.releaseClick(position)
-        releaseAnalytics.open(AnalyticsConstants.screen_schedule, releaseItem.id.id)
         router.navigateTo(Screens.ReleaseDetails(releaseItem.id, item = releaseItem))
     }
 
     fun onCopyClick(item: ReleaseItemState) {
         val releaseItem = findRelease(item.id) ?: return
         systemUtils.copyToClipBoard(releaseItem.link.orEmpty())
-        releaseAnalytics.copyLink(AnalyticsConstants.screen_schedule, item.id.id)
     }
 
     fun onShareClick(item: ReleaseItemState) {
         val releaseItem = findRelease(item.id) ?: return
         systemUtils.shareText(releaseItem.link.orEmpty())
-        releaseAnalytics.share(AnalyticsConstants.screen_schedule, item.id.id)
     }
 
     fun onShortcutClick(item: ReleaseItemState) {
         val releaseItem = findRelease(item.id) ?: return
         shortcutHelper.addShortcut(releaseItem)
-        releaseAnalytics.shortcut(AnalyticsConstants.screen_schedule, item.id.id)
     }
 
     fun refresh() {

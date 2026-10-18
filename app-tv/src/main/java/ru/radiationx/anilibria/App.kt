@@ -3,8 +3,6 @@ package ru.radiationx.anilibria
 import android.app.ActivityManager
 import android.app.Application
 import android.content.Context
-import io.appmetrica.analytics.AppMetrica
-import io.appmetrica.analytics.AppMetricaConfig
 import kotlinx.coroutines.flow.MutableStateFlow
 import ru.mintrocket.lib.mintpermissions.ext.initMintPermissions
 import ru.mintrocket.lib.mintpermissions.flows.ext.initMintPermissionsFlow
@@ -34,19 +32,11 @@ class App : Application() {
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         }
-        initYandexAppMetrica()
 
         if (isMainProcess()) {
             initInMainProcess()
         }
         appCreateAction.value = true
-    }
-
-    private fun initYandexAppMetrica() {
-        val config =
-            AppMetricaConfig.newConfigBuilder("48d49aa0-6aad-407e-a738-717a6c77d603").build()
-        AppMetrica.activate(applicationContext, config)
-        AppMetrica.enableActivityAutoTracking(this)
     }
 
     private fun initInMainProcess() {

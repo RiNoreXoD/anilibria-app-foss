@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.radiationx.anilibria.presentation.common.IErrorHandler
 import ru.radiationx.anilibria.utils.messages.SystemMessenger
-import ru.radiationx.data.analytics.features.AuthMainAnalytics
 import ru.radiationx.data.entity.common.AuthState
 import ru.radiationx.data.entity.domain.auth.WrongPasswordException
 import ru.radiationx.data.repository.AuthRepository
@@ -31,7 +30,6 @@ class Auth2FaCodeViewModel @Inject constructor(
     private val systemMessenger: SystemMessenger,
     private val authRepository: AuthRepository,
     private val errorHandler: IErrorHandler,
-    private val authMainAnalytics: AuthMainAnalytics
 ) : ViewModel() {
 
     private val codeState = MutableStateFlow("")
@@ -58,7 +56,6 @@ class Auth2FaCodeViewModel @Inject constructor(
             }.onSuccess {
                 decideWhatToDo(it)
             }.onFailure {
-                authMainAnalytics.error()
                 errorHandler.handle(it)
                 if (it is WrongPasswordException) {
                     router.exit()
@@ -70,10 +67,8 @@ class Auth2FaCodeViewModel @Inject constructor(
 
     private fun decideWhatToDo(state: AuthState) {
         if (state == AuthState.AUTH) {
-            authMainAnalytics.success()
             router.finishChain()
         } else {
-            authMainAnalytics.wrongSuccess()
             systemMessenger.showMessage("Что-то пошло не так")
         }
     }

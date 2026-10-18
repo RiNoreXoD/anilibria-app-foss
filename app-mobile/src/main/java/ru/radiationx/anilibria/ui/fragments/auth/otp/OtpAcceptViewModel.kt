@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.radiationx.anilibria.presentation.common.IErrorHandler
-import ru.radiationx.data.analytics.features.AuthDeviceAnalytics
 import ru.radiationx.data.entity.domain.auth.OtpAcceptedException
 import ru.radiationx.data.repository.AuthRepository
 import ru.radiationx.shared.ktx.EventFlow
@@ -18,7 +17,6 @@ import javax.inject.Inject
 class OtpAcceptViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val errorHandler: IErrorHandler,
-    private val authDeviceAnalytics: AuthDeviceAnalytics
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(OtpAcceptScreenState())
@@ -26,10 +24,6 @@ class OtpAcceptViewModel @Inject constructor(
 
     private val _closeEvent = EventFlow<Unit>()
     val closeEvent = _closeEvent.observe()
-
-    fun submitUseTime(time: Long) {
-        authDeviceAnalytics.useTime(time)
-    }
 
     fun onAcceptClick(code: String) {
         if (_state.value.let { it.progress || it.success }) {
@@ -48,7 +42,6 @@ class OtpAcceptViewModel @Inject constructor(
             }.onSuccess {
                 onSuccess()
             }.onFailure { error ->
-                authDeviceAnalytics.error()
                 if (error is OtpAcceptedException) {
                     onSuccess()
                     return@onFailure
@@ -64,7 +57,6 @@ class OtpAcceptViewModel @Inject constructor(
     }
 
     private fun onSuccess() {
-        authDeviceAnalytics.success()
         _state.update { it.copy(success = true, error = null) }
         startCloseTimer()
     }

@@ -40,10 +40,9 @@ object Screens {
 
     class AppUpdateScreen(
         private val force: Boolean,
-        private val analyticsFrom: String,
     ) : BaseActivityScreen() {
         override fun createIntent(context: Context): Intent {
-            return UpdateCheckerActivity.newIntent(context, force, analyticsFrom)
+            return UpdateCheckerActivity.newIntent(context, force)
         }
     }
 

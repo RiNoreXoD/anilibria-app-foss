@@ -40,7 +40,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
 import ru.radiationx.anilibria.R
-import ru.radiationx.anilibria.ads.BannerAdController
 import ru.radiationx.anilibria.apptheme.AppThemeController
 import ru.radiationx.anilibria.databinding.ActivityMainBinding
 import ru.radiationx.anilibria.di.DimensionsModule
@@ -59,16 +58,12 @@ import ru.radiationx.anilibria.ui.fragments.configuring.ConfiguringFragment
 import ru.radiationx.anilibria.utils.dimensions.Dimensions
 import ru.radiationx.anilibria.utils.dimensions.DimensionsProvider
 import ru.radiationx.anilibria.utils.messages.SystemMessenger
-import ru.radiationx.data.analytics.AnalyticsConstants
-import ru.radiationx.data.analytics.features.ActivityLaunchAnalytics
 import ru.radiationx.data.entity.common.AuthState
-import ru.radiationx.quill.get
 import ru.radiationx.quill.inject
 import ru.radiationx.quill.installModules
 import ru.radiationx.quill.viewModel
 import ru.radiationx.shared.ktx.android.getCompatColor
 import ru.radiationx.shared.ktx.android.immutableFlag
-import ru.radiationx.shared.ktx.android.isLaunchedFromHistory
 import ru.radiationx.shared.ktx.android.launchInResumed
 
 class MainActivity : BaseActivity(R.layout.activity_main) {
@@ -116,19 +111,12 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
 
     private var createdWithSavedState = false
 
-    private val bannerAdController by lazy {
-        BannerAdController(this, binding.bannerAdBview, binding.bannerAdContainer)
-    }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.DayNightAppTheme_NoActionBar)
         enableEdgeToEdge()
         installModules(DimensionsModule())
         super.onCreate(savedInstanceState)
-        if (isLaunchedFromHistory()) {
-            get<ActivityLaunchAnalytics>().launchFromHistory(this, savedInstanceState)
-        }
         createdWithSavedState = savedInstanceState != null
 
         viewModel.init(savedInstanceState?.getString(SELECTED_TAB))
@@ -175,13 +163,6 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
             onMainLogicCompleted()
         }.launchIn(lifecycleScope)
 
-        viewModel.state.mapNotNull { it.adsConfig }.distinctUntilChanged().onEach {
-            bannerAdController.load(
-                it.mainBanner,
-                appThemeController.getTheme()
-            )
-        }.launchIn(lifecycleScope)
-
         viewModel.updateTabsAction.observe().onEach {
             updateTabs()
         }.launchInResumed(this)
@@ -190,7 +171,6 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
     override fun onDestroy() {
         super.onDestroy()
         binding.tabsRecycler.adapter = null
-        bannerAdController.destroy()
     }
 
     private fun showUpdateData(update: UpdateDataState) {
@@ -221,7 +201,7 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
 
 
             val notifyIntent =
-                Screens.AppUpdateScreen(false, AnalyticsConstants.notification_local_update)
+                Screens.AppUpdateScreen(false)
                     .createIntent(this)
             val notifyPendingIntent =
                 PendingIntent.getActivity(this, 0, notifyIntent, immutableFlag())
@@ -410,7 +390,6 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
     private fun highlightTab(screenKey: String) {
         tabsAdapter.setSelected(screenKey)
         val screen = tabs.first { it.screen.screenKey == screenKey }.screen
-        viewModel.submitScreenAnalytics(screen)
         router.replaceScreen(screen)
     }
 

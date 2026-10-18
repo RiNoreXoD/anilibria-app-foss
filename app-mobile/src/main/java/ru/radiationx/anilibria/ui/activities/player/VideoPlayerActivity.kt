@@ -43,8 +43,6 @@ import ru.radiationx.anilibria.ui.activities.player.ext.getEpisode
 import ru.radiationx.anilibria.ui.activities.player.mappers.toPlaylistItem
 import ru.radiationx.anilibria.ui.activities.player.models.PlayerAction
 import ru.radiationx.anilibria.ui.activities.player.playlist.PlaylistDialogFragment
-import ru.radiationx.data.analytics.features.ActivityLaunchAnalytics
-import ru.radiationx.data.analytics.features.PlayerAnalytics
 import ru.radiationx.data.entity.domain.types.EpisodeId
 import ru.radiationx.media.mobile.models.PlayButtonState
 import ru.radiationx.quill.get
@@ -112,9 +110,7 @@ class VideoPlayerActivity : BaseActivity(R.layout.activity_videoplayer) {
 
     private val binding by viewBinding<ActivityVideoplayerBinding>()
 
-    private val analyticsListener by inject<PlayerAnalyticsListener>()
-
-    private val analytics by inject<PlayerAnalytics>()
+    private val errorListener by lazy { PlayerErrorListener(this) }
 
     private val player by inject<PlayerHolder>()
 
@@ -132,7 +128,6 @@ class VideoPlayerActivity : BaseActivity(R.layout.activity_videoplayer) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         if (isLaunchedFromHistory()) {
-            get<ActivityLaunchAnalytics>().launchFromHistory(this, savedInstanceState)
             startMainActivity()
             finish()
             return
@@ -249,17 +244,14 @@ class VideoPlayerActivity : BaseActivity(R.layout.activity_videoplayer) {
     @UnstableApi
     override fun onStart() {
         super.onStart()
-        analytics.screenStart()
 
         player.attach(this)
-        analyticsListener.transport = player.selectedTransport
-        player.getPlayer().addAnalyticsListener(analyticsListener)
+        player.getPlayer().addAnalyticsListener(errorListener)
         binding.playerView.setPlayer(player.getPlayer())
     }
 
     override fun onStop() {
         super.onStop()
-        analytics.screenStop()
 
         binding.playerView.pause()
         val timeline = binding.playerView.timelineState.value.takeIf { it.duration > 0 }
@@ -268,7 +260,7 @@ class VideoPlayerActivity : BaseActivity(R.layout.activity_videoplayer) {
             viewModel.saveEpisodeSeek(episode.id, timeline.position)
         }
 
-        player.getPlayer().removeAnalyticsListener(analyticsListener)
+        player.getPlayer().removeAnalyticsListener(errorListener)
         binding.playerView.setPlayer(null)
         player.detach()
     }
@@ -300,11 +292,6 @@ class VideoPlayerActivity : BaseActivity(R.layout.activity_videoplayer) {
         } else {
             savedEpisodeId ?: intentEpisodeId
         }
-        analytics.handleEpisode(
-            isNewIntent = isNewIntent,
-            hasBundle = bundle != null,
-            episodeId = episodeId
-        )
         viewModel.initialPlayEpisode(episodeId)
     }
 
@@ -491,7 +478,6 @@ class VideoPlayerActivity : BaseActivity(R.layout.activity_videoplayer) {
         }.launchIn(lifecycleScope)
 
         binding.playerView.onPipClick = {
-            analytics.pip()
             pipController.enter()
         }
 

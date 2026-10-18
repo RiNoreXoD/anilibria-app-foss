@@ -17,9 +17,6 @@ import ru.radiationx.anilibria.navigation.Screens
 import ru.radiationx.anilibria.presentation.common.IErrorHandler
 import ru.radiationx.anilibria.ui.common.webpage.WebPageViewState
 import ru.radiationx.anilibria.ui.fragments.release.details.ReleaseExtra
-import ru.radiationx.data.analytics.AnalyticsConstants
-import ru.radiationx.data.analytics.features.AuthVkAnalytics
-import ru.radiationx.data.analytics.features.CommentsAnalytics
 import ru.radiationx.data.datasource.holders.AuthHolder
 import ru.radiationx.data.interactors.ReleaseInteractor
 import ru.radiationx.data.repository.AuthRepository
@@ -38,8 +35,6 @@ class VkCommentsViewModel @Inject constructor(
     authHolder: AuthHolder,
     private val router: Router,
     private val errorHandler: IErrorHandler,
-    private val authVkAnalytics: AuthVkAnalytics,
-    private val commentsAnalytics: CommentsAnalytics,
 ) : ViewModel() {
 
     private var isVisibleToUser = false
@@ -115,11 +110,9 @@ class VkCommentsViewModel @Inject constructor(
     }
 
     fun onPageLoaded() {
-        commentsAnalytics.loaded()
     }
 
     fun onPageCommitError(error: Exception) {
-        commentsAnalytics.error()
     }
 
     fun notifyNewJsError() {
@@ -155,7 +148,6 @@ class VkCommentsViewModel @Inject constructor(
             val url = pendingAuthRequest
             if (isVisibleToUser && url != null) {
                 pendingAuthRequest = null
-                authVkAnalytics.open(AnalyticsConstants.screen_auth_vk)
                 router.navigateTo(Screens.Auth(Screens.AuthVk(url)))
             }
         }

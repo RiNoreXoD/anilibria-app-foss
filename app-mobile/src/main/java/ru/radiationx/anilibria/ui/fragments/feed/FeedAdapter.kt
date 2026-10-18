@@ -1,7 +1,6 @@
 package ru.radiationx.anilibria.ui.fragments.feed
 
 import android.view.View
-import ru.radiationx.anilibria.ads.NativeAdItem
 import ru.radiationx.anilibria.model.DonationCardItemState
 import ru.radiationx.anilibria.model.ReleaseItemState
 import ru.radiationx.anilibria.model.ScheduleItemState
@@ -17,11 +16,9 @@ import ru.radiationx.anilibria.ui.adapters.FeedSectionListItem
 import ru.radiationx.anilibria.ui.adapters.ListItem
 import ru.radiationx.anilibria.ui.adapters.LoadErrorListItem
 import ru.radiationx.anilibria.ui.adapters.LoadMoreListItem
-import ru.radiationx.anilibria.ui.adapters.NativeAdListItem
 import ru.radiationx.anilibria.ui.adapters.PlaceholderDelegate
 import ru.radiationx.anilibria.ui.adapters.PlaceholderListItem
 import ru.radiationx.anilibria.ui.adapters.ShadowDirection
-import ru.radiationx.anilibria.ui.adapters.ads.NativeAdDelegate
 import ru.radiationx.anilibria.ui.adapters.feed.AppInfoCardDelegate
 import ru.radiationx.anilibria.ui.adapters.feed.AppWarningCardDelegate
 import ru.radiationx.anilibria.ui.adapters.feed.DonationCardDelegate
@@ -87,7 +84,6 @@ class FeedAdapter(
         addDelegate(FeedRandomBtnDelegate(randomClickListener))
         addDelegate(DividerShadowItemDelegate())
         addDelegate(PlaceholderDelegate())
-        addDelegate(NativeAdDelegate())
     }
 
     fun bindState(state: FeedScreenState) {
@@ -138,15 +134,13 @@ class FeedAdapter(
             newItems.add(FeedRandomBtnListItem("random"))
 
             var lastType: String? = null
-            feedItems.forEach {
-                val (type, item) = when (it) {
-                    is NativeAdItem.Ad -> "ad" to NativeAdListItem(it.ad)
-                    is NativeAdItem.Data -> when {
-                        it.data.release != null -> "release" to FeedListItem(it.data)
-                        it.data.youtube != null -> "youtube" to FeedListItem(it.data)
-                        else -> throw IllegalStateException("Unknown item type")
-                    }
+            feedItems.forEach { data ->
+                val type = when {
+                    data.release != null -> "release"
+                    data.youtube != null -> "youtube"
+                    else -> throw IllegalStateException("Unknown item type")
                 }
+                val item = FeedListItem(data)
                 if (lastType != null && lastType != type) {
                     newItems.add(
                         DividerShadowListItem(

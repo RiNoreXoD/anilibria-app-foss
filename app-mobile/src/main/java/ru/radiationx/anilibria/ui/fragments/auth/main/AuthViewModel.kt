@@ -15,9 +15,6 @@ import ru.radiationx.anilibria.model.toState
 import ru.radiationx.anilibria.navigation.Screens
 import ru.radiationx.anilibria.presentation.common.IErrorHandler
 import ru.radiationx.anilibria.utils.messages.SystemMessenger
-import ru.radiationx.data.analytics.AnalyticsConstants
-import ru.radiationx.data.analytics.features.AuthMainAnalytics
-import ru.radiationx.data.analytics.features.AuthSocialAnalytics
 import ru.radiationx.data.datasource.remote.address.ApiConfig
 import ru.radiationx.data.entity.common.AuthState
 import ru.radiationx.data.entity.domain.auth.EmptyFieldException
@@ -32,8 +29,6 @@ class AuthViewModel @Inject constructor(
     private val systemMessenger: SystemMessenger,
     private val authRepository: AuthRepository,
     private val errorHandler: IErrorHandler,
-    private val authMainAnalytics: AuthMainAnalytics,
-    private val authSocialAnalytics: AuthSocialAnalytics,
     private val apiConfig: ApiConfig,
     private val systemUtils: SystemUtils,
 ) : ViewModel() {
@@ -72,8 +67,6 @@ class AuthViewModel @Inject constructor(
     }
 
     fun onSocialClick(item: SocialAuthItemState) {
-        authMainAnalytics.socialClick(item.key)
-        authSocialAnalytics.open(AnalyticsConstants.screen_auth_main, item.key)
         router.navigateTo(Screens.AuthSocial(item.key))
     }
 
@@ -86,7 +79,6 @@ class AuthViewModel @Inject constructor(
     }
 
     fun signIn() {
-        authMainAnalytics.loginClick()
         viewModelScope.launch {
             _state.update { it.copy(sending = true) }
             val inputData = inputDataState.value
@@ -99,7 +91,6 @@ class AuthViewModel @Inject constructor(
                 if (isEmpty2FaCode(inputData, it)) {
                     router.navigateTo(Screens.Auth2FaCode(inputData.login, inputData.password))
                 } else {
-                    authMainAnalytics.error()
                     errorHandler.handle(it)
                 }
             }
@@ -115,10 +106,8 @@ class AuthViewModel @Inject constructor(
 
     private fun decideWhatToDo(state: AuthState) {
         if (state == AuthState.AUTH) {
-            authMainAnalytics.success()
             router.finishChain()
         } else {
-            authMainAnalytics.wrongSuccess()
             systemMessenger.showMessage("Что-то пошло не так")
         }
     }
@@ -136,24 +125,17 @@ class AuthViewModel @Inject constructor(
 
     fun skip() {
         viewModelScope.launch {
-            authMainAnalytics.skipClick()
             authRepository.setAuthSkipped(true)
             router.finishChain()
         }
     }
 
     fun registrationClick() {
-        authMainAnalytics.regClick()
         _registrationEvent.set(Unit)
     }
 
     fun registrationToSiteClick() {
-        authMainAnalytics.regToSiteClick()
         systemUtils.externalLink("${apiConfig.siteUrl}/pages/login.php")
-    }
-
-    fun submitUseTime(time: Long) {
-        authMainAnalytics.useTime(time)
     }
 
 }

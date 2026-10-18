@@ -11,9 +11,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.radiationx.anilibria.presentation.common.IErrorHandler
-import ru.radiationx.data.analytics.AnalyticsConstants
-import ru.radiationx.data.analytics.features.CommentsAnalytics
-import ru.radiationx.data.analytics.features.ReleaseAnalytics
 import ru.radiationx.data.entity.domain.release.Release
 import ru.radiationx.data.entity.domain.types.ReleaseCode
 import ru.radiationx.data.entity.domain.types.ReleaseId
@@ -39,8 +36,6 @@ class ReleaseViewModel @Inject constructor(
     private val router: Router,
     private val errorHandler: IErrorHandler,
     commentsNotifier: ReleaseCommentsNotifier,
-    private val commentsAnalytics: CommentsAnalytics,
-    private val releaseAnalytics: ReleaseAnalytics,
 ) : ViewModel() {
 
     private var currentData: Release? = null
@@ -116,7 +111,6 @@ class ReleaseViewModel @Inject constructor(
 
     fun onShareClick() {
         currentData?.let {
-            releaseAnalytics.share(AnalyticsConstants.screen_release, it.id.id)
         }
         currentData?.link?.let {
             shareAction.set(it)
@@ -125,7 +119,6 @@ class ReleaseViewModel @Inject constructor(
 
     fun onCopyLinkClick() {
         currentData?.let {
-            releaseAnalytics.copyLink(AnalyticsConstants.screen_release, it.id.id)
         }
         currentData?.link?.let {
             copyAction.set(it)
@@ -134,14 +127,12 @@ class ReleaseViewModel @Inject constructor(
 
     fun onShortcutAddClick() {
         currentData?.let {
-            releaseAnalytics.shortcut(AnalyticsConstants.screen_release, it.id.id)
             shortcutAction.set(it)
         }
     }
 
     fun onCommentsSwipe() {
         currentData?.also {
-            commentsAnalytics.open(AnalyticsConstants.screen_release, it.id.id)
         }
     }
 

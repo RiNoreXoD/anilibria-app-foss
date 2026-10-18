@@ -16,8 +16,6 @@ import ru.radiationx.anilibria.apptheme.AppTheme
 import ru.radiationx.anilibria.databinding.ActivityMoonBinding
 import ru.radiationx.anilibria.extension.generateWithTheme
 import ru.radiationx.anilibria.ui.common.Templates
-import ru.radiationx.data.analytics.features.ActivityLaunchAnalytics
-import ru.radiationx.data.analytics.features.WebPlayerAnalytics
 import ru.radiationx.data.datasource.remote.address.ApiConfig
 import ru.radiationx.quill.get
 import ru.radiationx.quill.inject
@@ -29,7 +27,6 @@ import ru.radiationx.shared.ktx.android.isLaunchedFromHistory
 import ru.radiationx.shared.ktx.android.setWebViewClientCompat
 import ru.radiationx.shared.ktx.android.startMainActivity
 import ru.radiationx.shared.ktx.android.toException
-import ru.radiationx.shared_app.analytics.LifecycleTimeCounter
 import ru.radiationx.shared_app.common.SystemUtils
 import timber.log.Timber
 
@@ -50,17 +47,11 @@ class WebPlayerActivity : BaseActivity(R.layout.activity_moon) {
     private val argUrl by lazy { getExtraNotNull(ARG_URL, "") }
     private val argReleaseCode by lazy { getExtraNotNull(ARG_RELEASE_CODE, "") }
 
-    private val useTimeCounter by lazy {
-        LifecycleTimeCounter(webPlayerAnalytics::useTime)
-    }
-
     private val binding by viewBinding<ActivityMoonBinding>()
 
     private val apiConfig by inject<ApiConfig>()
 
     private val systemUtils by inject<SystemUtils>()
-
-    private val webPlayerAnalytics by inject<WebPlayerAnalytics>()
 
     private fun isInvalidIntent(): Boolean {
         return isLaunchedFromHistory() || argUrl.isEmpty() || argReleaseCode.isEmpty()
@@ -70,12 +61,10 @@ class WebPlayerActivity : BaseActivity(R.layout.activity_moon) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (isInvalidIntent()) {
-            get<ActivityLaunchAnalytics>().launchFromHistory(this, savedInstanceState)
             startMainActivity()
             finish()
             return
         }
-        lifecycle.addObserver(useTimeCounter)
 
         window.setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -104,7 +93,6 @@ class WebPlayerActivity : BaseActivity(R.layout.activity_moon) {
             }
 
             override fun onPageFinished(view: WebView, url: String) {
-                webPlayerAnalytics.loaded()
             }
 
             override fun onReceivedSslError(
@@ -159,6 +147,5 @@ class WebPlayerActivity : BaseActivity(R.layout.activity_moon) {
 
     private fun onPageError(error: Exception) {
         Timber.e(error, "onPageError")
-        webPlayerAnalytics.error()
     }
 }
