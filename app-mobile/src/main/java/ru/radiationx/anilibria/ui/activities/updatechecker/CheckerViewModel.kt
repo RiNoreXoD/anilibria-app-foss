@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.radiationx.anilibria.presentation.common.IErrorHandler
 import ru.radiationx.data.SharedBuildConfig
-import ru.radiationx.data.analytics.features.UpdaterAnalytics
 import ru.radiationx.data.downloader.LocalFile
 import ru.radiationx.data.downloader.RemoteFile
 import ru.radiationx.data.downloader.RemoteFileRepository
@@ -30,7 +29,6 @@ class CheckerViewModel @Inject constructor(
     private val argExtra: CheckerExtra,
     private val checkerRepository: CheckerRepository,
     private val errorHandler: IErrorHandler,
-    private val updaterAnalytics: UpdaterAnalytics,
     private val systemUtils: SystemUtils,
     private val remoteFileRepository: RemoteFileRepository,
     private val sharedBuildConfig: SharedBuildConfig
@@ -57,10 +55,6 @@ class CheckerViewModel @Inject constructor(
         data.copy(data = data.data.copy(links = newLinks))
     }
 
-    fun submitUseTime(time: Long) {
-        updaterAnalytics.useTime(time)
-    }
-
     fun checkUpdate(force: Boolean = false) {
         viewModelScope.launch {
             _currentData.update { it.copy(loading = true) }
@@ -76,8 +70,6 @@ class CheckerViewModel @Inject constructor(
     }
 
     fun onLinkClick(link: UpdateData.UpdateLink) {
-        updaterAnalytics.downloadClick()
-        updaterAnalytics.sourceDownload(link.name)
         when (link.type) {
             UpdateData.LinkType.FILE -> downloadFile(link)
             UpdateData.LinkType.SITE -> systemUtils.externalLink(link.url)

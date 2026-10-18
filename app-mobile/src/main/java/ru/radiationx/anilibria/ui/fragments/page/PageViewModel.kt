@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.radiationx.anilibria.presentation.common.IErrorHandler
-import ru.radiationx.data.analytics.features.PageAnalytics
 import ru.radiationx.data.entity.domain.page.PageLibria
 import ru.radiationx.data.repository.PageRepository
 import ru.radiationx.quill.QuillExtra
@@ -24,7 +23,6 @@ class PageViewModel @Inject constructor(
     private val pageRepository: PageRepository,
     private val router: Router,
     private val errorHandler: IErrorHandler,
-    private val pageAnalytics: PageAnalytics,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(PageScreenState())
@@ -46,7 +44,6 @@ class PageViewModel @Inject constructor(
             }.onSuccess { data ->
                 _state.update { it.copy(data = data) }
             }.onFailure {
-                pageAnalytics.error()
                 errorHandler.handle(it)
             }
             _state.update { it.copy(loading = false) }

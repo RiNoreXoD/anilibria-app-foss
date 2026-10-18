@@ -5,7 +5,6 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.appmetrica)
 }
 
 fun getDateTime(): String {
@@ -82,13 +81,11 @@ android {
     productFlavors {
         create("app") {
             dimension = "type"
-            buildConfigField("boolean", "HAS_ADS", "true")
             buildConfigField("boolean", "FOR_RUSTORE", "false")
         }
 
         create("rustore") {
             dimension = "type"
-            buildConfigField("boolean", "HAS_ADS", "true")
             buildConfigField("boolean", "FOR_RUSTORE", "true")
             versionName = "${libs.versions.mobile.version.name.get()}-rustore"
         }
@@ -96,7 +93,6 @@ android {
         create("store") {
             dimension = "type"
             applicationId = "tv.anilibria.store"
-            buildConfigField("boolean", "HAS_ADS", "false")
             buildConfigField("boolean", "FOR_RUSTORE", "false")
             versionName = "${libs.versions.mobile.version.name.get()}-lite"
         }
@@ -140,10 +136,6 @@ androidComponents {
 
 kotlin {
     jvmToolchain(libs.versions.jvm.toolchain.version.get().toInt())
-}
-
-appmetrica {
-    setPostApiKey(localProperties.getProperty("appmetrica_post_api_key").orEmpty())
 }
 
 dependencies {
@@ -196,8 +188,6 @@ dependencies {
     implementation(libs.firebase.core)
 
     implementation(libs.viewbindingpropertydelegate)
-
-    implementation(libs.yandex.mobileads)
 }
 
 apply(plugin = libs.plugins.gms.get().pluginId)

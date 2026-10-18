@@ -6,10 +6,6 @@ import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import ru.radiationx.data.analytics.AnalyticsConstants
-import ru.radiationx.data.analytics.features.DonationDetailAnalytics
-import ru.radiationx.data.analytics.features.DonationDialogAnalytics
-import ru.radiationx.data.analytics.features.DonationYooMoneyAnalytics
 import ru.radiationx.data.entity.domain.donation.DonationContentButton
 import ru.radiationx.data.entity.domain.donation.DonationInfo
 import ru.radiationx.data.repository.DonationRepository
@@ -22,9 +18,6 @@ import javax.inject.Inject
 class DonationDetailViewModel @Inject constructor(
     private val router: Router,
     private val donationRepository: DonationRepository,
-    private val detailAnalytics: DonationDetailAnalytics,
-    private val yooMoneyAnalytics: DonationYooMoneyAnalytics,
-    private val dialogAnalytics: DonationDialogAnalytics,
     private val systemUtils: SystemUtils
 ) : ViewModel() {
 
@@ -57,12 +50,10 @@ class DonationDetailViewModel @Inject constructor(
     }
 
     fun onLinkClick(url: String) {
-        detailAnalytics.linkClick(url)
         systemUtils.externalLink(url)
     }
 
     fun onButtonClick(button: DonationContentButton) {
-        detailAnalytics.buttonClick(button.text)
         val info = currentData ?: return
         val buttonTag = button.tag
         val buttonLink = button.link
@@ -74,12 +65,10 @@ class DonationDetailViewModel @Inject constructor(
 
         when {
             yoomoneyDialog != null -> {
-                yooMoneyAnalytics.open(AnalyticsConstants.screen_donation_detail)
                 _yoomoneyEvent.set(Unit)
             }
 
             dialog != null -> {
-                dialogAnalytics.open(AnalyticsConstants.screen_donation_detail, dialog.tag)
                 _dialogEvent.set(dialog.tag)
             }
 

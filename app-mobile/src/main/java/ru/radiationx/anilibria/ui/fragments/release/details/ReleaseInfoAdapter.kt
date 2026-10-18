@@ -8,7 +8,6 @@ import ru.radiationx.anilibria.ui.adapters.CommentRouteListItem
 import ru.radiationx.anilibria.ui.adapters.DividerShadowListItem
 import ru.radiationx.anilibria.ui.adapters.FeedSectionListItem
 import ru.radiationx.anilibria.ui.adapters.ListItem
-import ru.radiationx.anilibria.ui.adapters.NativeAdListItem
 import ru.radiationx.anilibria.ui.adapters.ReleaseBlockedListItem
 import ru.radiationx.anilibria.ui.adapters.ReleaseDonateListItem
 import ru.radiationx.anilibria.ui.adapters.ReleaseEpisodeControlItem
@@ -18,7 +17,6 @@ import ru.radiationx.anilibria.ui.adapters.ReleaseHeadListItem
 import ru.radiationx.anilibria.ui.adapters.ReleaseRemindListItem
 import ru.radiationx.anilibria.ui.adapters.ReleaseTorrentListItem
 import ru.radiationx.anilibria.ui.adapters.ShadowDirection
-import ru.radiationx.anilibria.ui.adapters.ads.NativeAdDelegate
 import ru.radiationx.anilibria.ui.adapters.feed.FeedSectionDelegate
 import ru.radiationx.anilibria.ui.adapters.global.CommentRouteDelegate
 import ru.radiationx.anilibria.ui.adapters.other.DividerShadowItemDelegate
@@ -70,7 +68,7 @@ class ReleaseInfoAdapter(
         addDelegate(ReleaseBlockedDelegate())
         addDelegate(CommentRouteDelegate(commentsClickListener))
         addDelegate(DividerShadowItemDelegate())
-        addDelegate(NativeAdDelegate())
+
     }
 
     fun bindState(releaseState: ReleaseDetailState, screenState: ReleaseDetailScreenState) {
@@ -174,18 +172,8 @@ class ReleaseInfoAdapter(
             newItems.add(DividerShadowListItem(ShadowDirection.Double, "episodes"))
         }
 
-        val commentsShadow = if (screenState.nativeAd != null) {
-            ShadowDirection.Double
-        } else {
-            ShadowDirection.Bottom
-        }
         newItems.add(CommentRouteListItem("comments"))
-        newItems.add(DividerShadowListItem(commentsShadow, "comments"))
-
-        if (screenState.nativeAd != null) {
-            newItems.add(NativeAdListItem(screenState.nativeAd))
-            newItems.add(DividerShadowListItem(ShadowDirection.Bottom, "nativeAd"))
-        }
+        newItems.add(DividerShadowListItem(ShadowDirection.Bottom, "comments"))
 
         items = newItems
     }

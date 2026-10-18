@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.radiationx.anilibria.presentation.common.IErrorHandler
 import ru.radiationx.anilibria.ui.common.webpage.WebPageViewState
-import ru.radiationx.data.analytics.features.AuthSocialAnalytics
 import ru.radiationx.data.entity.domain.auth.SocialAuthException
 import ru.radiationx.data.repository.AuthRepository
 import ru.radiationx.quill.QuillExtra
@@ -27,7 +26,6 @@ class AuthSocialViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val router: Router,
     private val errorHandler: IErrorHandler,
-    private val authSocialAnalytics: AuthSocialAnalytics,
 ) : ViewModel() {
 
     private val detector = WebAuthSoFastDetector()
@@ -75,10 +73,6 @@ class AuthSocialViewModel @Inject constructor(
         currentSuccessUrl?.also { signSocial(it) }
     }
 
-    fun submitUseTime(time: Long) {
-        authSocialAnalytics.useTime(argExtra.key, time)
-    }
-
     fun onSuccessAuthResult(result: String) {
         if (detector.isSoFast()) {
             currentSuccessUrl = result
@@ -92,9 +86,8 @@ class AuthSocialViewModel @Inject constructor(
         router.exit()
     }
 
-    fun sendAnalyticsPageError(error: Exception) {
-        Timber.e(error, "sendAnalyticsPageError")
-        authSocialAnalytics.pageError(argExtra.key)
+    fun onPageError(error: Exception) {
+        Timber.e(error, "Auth social page error")
     }
 
     fun onPageStateChanged(pageState: WebPageViewState) {
@@ -109,10 +102,8 @@ class AuthSocialViewModel @Inject constructor(
             coRunCatching {
                 authRepository.signInSocial(resultUrl, data)
             }.onSuccess {
-                authSocialAnalytics.success(argExtra.key)
                 router.finishChain()
             }.onFailure {
-                authSocialAnalytics.error(argExtra.key)
                 if (it is SocialAuthException) {
                     _errorEvent.set(Unit)
                 } else {

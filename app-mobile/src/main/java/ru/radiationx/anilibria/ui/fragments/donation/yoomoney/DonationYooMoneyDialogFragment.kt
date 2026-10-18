@@ -121,7 +121,6 @@ class DonationYooMoneyDialogFragment : TaiwaDialogFragment(R.layout.dialog_donat
         if (data.help != null) {
             binding.yooMoneyHelp.text = data.help
             binding.yooMoneyTitle.setOnClickListener {
-                viewModel.submitHelpClickAnalytics()
                 binding.yooMoneyHelp.isVisible = !binding.yooMoneyHelp.isVisible
             }
         } else {

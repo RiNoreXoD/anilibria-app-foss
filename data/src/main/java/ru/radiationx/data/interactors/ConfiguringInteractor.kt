@@ -20,9 +20,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import ru.radiationx.data.analytics.TimeCounter
-import ru.radiationx.data.analytics.features.ConfiguringAnalytics
-import ru.radiationx.data.analytics.features.model.AnalyticsConfigState
 import ru.radiationx.data.datasource.remote.address.ApiAddress
 import ru.radiationx.data.datasource.remote.address.ApiConfig
 import ru.radiationx.data.entity.common.ConfigScreenState
@@ -33,7 +30,6 @@ import javax.inject.Inject
 class ConfiguringInteractor @Inject constructor(
     private val apiConfig: ApiConfig,
     private val configurationRepository: ConfigurationRepository,
-    private val analytics: ConfiguringAnalytics,
 ) {
 
     private val initialState = State.LOAD_CONFIG
@@ -44,47 +40,30 @@ class ConfiguringInteractor @Inject constructor(
 
     private val scope = CoroutineScope(Dispatchers.Main.immediate + SupervisorJob())
 
-    private val fullTimeCounter = TimeCounter()
-
-    private var isFullSuccess = false
-    private var startAddressTag = apiConfig.tag
 
     fun observeScreenState(): Flow<ConfigScreenState> = screenState
 
     fun initCheck() {
-        startAddressTag = apiConfig.tag
-        fullTimeCounter.start()
         updateState(initialState)
         doByState()
     }
 
     fun repeatCheck() {
-        analytics.onRepeatClick(currentState.toAnalyticsState())
         doByState()
     }
 
     fun nextCheck() {
-        analytics.onNextStepClick(currentState.toAnalyticsState())
         val nextState = getNextState() ?: initialState
         doByState(nextState)
     }
 
     fun skipCheck() {
         scope.launch {
-            isFullSuccess = false
-            analytics.onSkipClick(currentState.toAnalyticsState())
             apiConfig.updateNeedConfig(false)
         }
     }
 
     fun finishCheck() {
-        fullTimeCounter.pause()
-        analytics.checkFull(
-            startAddressTag,
-            apiConfig.tag,
-            fullTimeCounter.elapsed(),
-            isFullSuccess
-        )
         scope.cancel()
     }
 
@@ -110,10 +89,8 @@ class ConfiguringInteractor @Inject constructor(
 
     private fun loadConfig() {
         updateState(State.LOAD_CONFIG)
-        val timeCounter = TimeCounter()
 
         scope.launch {
-            timeCounter.start()
             screenState.update {
                 it.copy(
                     status = "Загрузка списка адресов",
@@ -123,7 +100,6 @@ class ConfiguringInteractor @Inject constructor(
             runCatching {
                 configurationRepository.getConfiguration()
             }.onSuccess {
-                analytics.loadConfig(timeCounter.elapsed(), true, null)
                 val addresses = apiConfig.getAddresses()
                 val proxies = addresses.sumOf { it.proxies.size }
                 screenState.update {
@@ -131,7 +107,6 @@ class ConfiguringInteractor @Inject constructor(
                 }
                 checkAvail()
             }.onFailure { error ->
-                analytics.loadConfig(timeCounter.elapsed(), false, error)
                 Timber.e(error)
                 screenState.update {
                     it.copy(
@@ -145,11 +120,9 @@ class ConfiguringInteractor @Inject constructor(
 
     private fun checkAvail() {
         updateState(State.CHECK_AVAIL)
-        val timeCounter = TimeCounter()
         val addresses = apiConfig.getAddresses()
 
         scope.launch {
-            timeCounter.start()
             screenState.update {
                 it.copy(
                     status = "Проверка доступных адресов",
@@ -159,15 +132,12 @@ class ConfiguringInteractor @Inject constructor(
             runCatching {
                 mergeAvailCheck(addresses)
             }.onSuccess { activeAddress ->
-                isFullSuccess = true
-                analytics.checkAvail(activeAddress.tag, timeCounter.elapsed(), true, null)
                 screenState.update {
                     it.copy(status = "Найден доступный адрес")
                 }
                 apiConfig.updateActiveAddress(activeAddress)
                 apiConfig.updateNeedConfig(false)
             }.onFailure { error ->
-                analytics.checkAvail(null, timeCounter.elapsed(), false, error)
                 Timber.e(error)
                 when (error) {
                     // from mergeAvailCheck
@@ -185,19 +155,16 @@ class ConfiguringInteractor @Inject constructor(
                     }
                 }
             }
-            timeCounter.pause()
         }
     }
 
     private fun checkProxies() {
         updateState(State.CHECK_PROXIES)
-        val timeCounter = TimeCounter()
         val proxies =
             apiConfig.getAddresses().map { it.proxies }.reduce { acc, list -> acc.plus(list) }
 
 
         scope.launch {
-            timeCounter.start()
             screenState.update {
                 it.copy(
                     status = "Проверка доступных прокси",
@@ -228,9 +195,7 @@ class ConfiguringInteractor @Inject constructor(
                 val bestProxy = proxies.minByOrNull { it.second.timeTaken }
                 val addressByProxy =
                     apiConfig.getAddresses().find { it.proxies.contains(bestProxy?.first) }
-                analytics.checkProxies(addressByProxy?.tag, timeCounter.elapsed(), true, null)
                 if (bestProxy != null && addressByProxy != null) {
-                    isFullSuccess = true
                     apiConfig.updateActiveAddress(addressByProxy)
                     screenState.update {
                         it.copy(
@@ -247,7 +212,6 @@ class ConfiguringInteractor @Inject constructor(
                     }
                 }
             }.onFailure { error ->
-                analytics.checkProxies(null, timeCounter.elapsed(), false, error)
                 Timber.e(error)
                 screenState.update {
                     it.copy(
@@ -256,7 +220,6 @@ class ConfiguringInteractor @Inject constructor(
                     )
                 }
             }
-            timeCounter.pause()
         }
     }
 
@@ -270,12 +233,6 @@ class ConfiguringInteractor @Inject constructor(
             .filter { it.second }
             .map { it.first }
             .first()
-    }
-
-    private fun State.toAnalyticsState(): AnalyticsConfigState = when (this) {
-        State.LOAD_CONFIG -> AnalyticsConfigState.LOAD_CONFIG
-        State.CHECK_AVAIL -> AnalyticsConfigState.CHECK_AVAIL
-        State.CHECK_PROXIES -> AnalyticsConfigState.CHECK_PROXIES
     }
 
     private enum class State {

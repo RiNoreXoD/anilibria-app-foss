@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import ru.radiationx.data.analytics.features.TeamsAnalytics
 import ru.radiationx.data.entity.domain.team.Team
 import ru.radiationx.data.entity.domain.team.Teams
 import ru.radiationx.data.repository.TeamsRepository
@@ -28,7 +27,6 @@ class TeamsViewModel @Inject constructor(
     private val router: Router,
     private val repository: TeamsRepository,
     private val systemUtils: SystemUtils,
-    private val analytics: TeamsAnalytics
 ) : ViewModel() {
 
     private val currentDataRelay = MutableStateFlow<Teams?>(null)
@@ -80,7 +78,6 @@ class TeamsViewModel @Inject constructor(
     }
 
     fun onHeaderActionClick() {
-        analytics.joinClick()
         systemUtils.externalLink("https://t.me/joinlibria_bot")
     }
 

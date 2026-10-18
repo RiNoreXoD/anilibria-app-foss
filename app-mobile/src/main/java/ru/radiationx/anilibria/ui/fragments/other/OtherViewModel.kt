@@ -17,15 +17,6 @@ import ru.radiationx.anilibria.model.toState
 import ru.radiationx.anilibria.navigation.Screens
 import ru.radiationx.anilibria.presentation.common.IErrorHandler
 import ru.radiationx.anilibria.utils.messages.SystemMessenger
-import ru.radiationx.data.analytics.AnalyticsConstants
-import ru.radiationx.data.analytics.features.AuthDeviceAnalytics
-import ru.radiationx.data.analytics.features.AuthMainAnalytics
-import ru.radiationx.data.analytics.features.DonationDetailAnalytics
-import ru.radiationx.data.analytics.features.HistoryAnalytics
-import ru.radiationx.data.analytics.features.OtherAnalytics
-import ru.radiationx.data.analytics.features.PageAnalytics
-import ru.radiationx.data.analytics.features.SettingsAnalytics
-import ru.radiationx.data.analytics.features.TeamsAnalytics
 import ru.radiationx.data.entity.common.AuthState
 import ru.radiationx.data.entity.domain.other.LinkMenuItem
 import ru.radiationx.data.entity.domain.other.OtherMenuItem
@@ -45,14 +36,6 @@ class OtherViewModel @Inject constructor(
     private val errorHandler: IErrorHandler,
     private val menuRepository: MenuRepository,
     private val systemUtils: SystemUtils,
-    private val authDeviceAnalytics: AuthDeviceAnalytics,
-    private val authMainAnalytics: AuthMainAnalytics,
-    private val historyAnalytics: HistoryAnalytics,
-    private val otherAnalytics: OtherAnalytics,
-    private val settingsAnalytics: SettingsAnalytics,
-    private val pageAnalytics: PageAnalytics,
-    private val donationDetailAnalytics: DonationDetailAnalytics,
-    private val teamsAnalytics: TeamsAnalytics,
 ) : ViewModel() {
 
     companion object {
@@ -111,18 +94,14 @@ class OtherViewModel @Inject constructor(
     fun onProfileClick() {
         viewModelScope.launch {
             if (authRepository.getAuthState() == AuthState.AUTH) {
-                otherAnalytics.profileClick()
                 return@launch
             }
-            otherAnalytics.loginClick()
-            authMainAnalytics.open(AnalyticsConstants.screen_other)
             router.navigateTo(Screens.Auth())
         }
     }
 
     @OptIn(DelicateCoroutinesApi::class)
     fun signOut() {
-        otherAnalytics.logoutClick()
         GlobalScope.launch {
             coRunCatching {
                 authRepository.signOut()
@@ -137,44 +116,32 @@ class OtherViewModel @Inject constructor(
     fun onMenuClick(item: OtherMenuItemState) {
         when (item.id) {
             MENU_HISTORY -> {
-                otherAnalytics.historyClick()
-                historyAnalytics.open(AnalyticsConstants.screen_other)
                 router.navigateTo(Screens.History())
             }
 
             MENU_TEAM -> {
-                otherAnalytics.teamClick()
-                teamsAnalytics.open(AnalyticsConstants.screen_other)
                 router.navigateTo(Screens.Teams())
             }
 
             MENU_DONATE -> {
-                otherAnalytics.donateClick()
-                donationDetailAnalytics.open(AnalyticsConstants.screen_other)
                 router.navigateTo(Screens.DonationDetail())
             }
 
             MENU_SETTINGS -> {
-                otherAnalytics.settingsClick()
                 router.navigateTo(Screens.Settings())
             }
 
             MENU_OTP_CODE -> {
-                settingsAnalytics.open(AnalyticsConstants.screen_other)
-                otherAnalytics.authDeviceClick()
-                authDeviceAnalytics.open(AnalyticsConstants.screen_other)
                 _otpEvent.set(Unit)
             }
 
             else -> {
                 linksMap[item.id]?.also { linkItem ->
-                    otherAnalytics.linkClick(linkItem.title)
                     val absoluteLink = linkItem.absoluteLink
                     val pagePath = linkItem.sitePagePath
                     when {
                         absoluteLink != null -> systemUtils.externalLink(absoluteLink)
                         pagePath != null -> {
-                            pageAnalytics.open(AnalyticsConstants.screen_other, pagePath)
                             router.navigateTo(Screens.StaticPage(pagePath))
                         }
                     }

@@ -15,12 +15,6 @@ import ru.radiationx.anilibria.model.toState
 import ru.radiationx.anilibria.navigation.Screens
 import ru.radiationx.anilibria.presentation.common.IErrorHandler
 import ru.radiationx.anilibria.utils.ShortcutHelper
-import ru.radiationx.data.analytics.AnalyticsConstants
-import ru.radiationx.data.analytics.TimeCounter
-import ru.radiationx.data.analytics.features.CatalogAnalytics
-import ru.radiationx.data.analytics.features.CatalogFilterAnalytics
-import ru.radiationx.data.analytics.features.FastSearchAnalytics
-import ru.radiationx.data.analytics.features.ReleaseAnalytics
 import ru.radiationx.data.datasource.holders.PreferencesHolder
 import ru.radiationx.data.datasource.holders.ReleaseUpdateHolder
 import ru.radiationx.data.entity.domain.release.GenreItem
@@ -51,23 +45,16 @@ class CatalogViewModel @Inject constructor(
     private val router: Router,
     private val errorHandler: IErrorHandler,
     private val releaseUpdateHolder: ReleaseUpdateHolder,
-    private val catalogAnalytics: CatalogAnalytics,
-    private val catalogFilterAnalytics: CatalogFilterAnalytics,
-    private val fastSearchAnalytics: FastSearchAnalytics,
-    private val releaseAnalytics: ReleaseAnalytics,
     private val appPreferences: PreferencesHolder,
     private val shortcutHelper: ShortcutHelper,
     private val systemUtils: SystemUtils,
 ) : ViewModel() {
 
-    private var lastLoadedPage: Int? = null
-    private val filterUseTimeCounter = TimeCounter()
 
     private val remindText =
         "Если не удаётся найти нужный релиз, попробуйте искать через Google или Yandex c приставкой \"AniLibria\".\nПо ссылке в поисковике можно будет открыть приложение."
 
     private val pageLoader = PageLoader(viewModelScope) {
-        submitPageAnalytics(it.page)
         getDataSource(it)
     }
 
@@ -169,12 +156,6 @@ class CatalogViewModel @Inject constructor(
             .launchIn(viewModelScope)
     }
 
-    private fun submitPageAnalytics(page: Int) {
-        if (lastLoadedPage != page) {
-            catalogAnalytics.loadPage(page)
-            lastLoadedPage = page
-        }
-    }
 
     private suspend fun getDataSource(params: PageLoaderParams<List<Release>>): PageLoaderAction.Data<List<Release>> {
         return coRunCatching {
@@ -199,14 +180,11 @@ class CatalogViewModel @Inject constructor(
     }
 
     fun showDialog() {
-        filterUseTimeCounter.start()
-        catalogAnalytics.filterClick()
-        catalogFilterAnalytics.open(AnalyticsConstants.screen_catalog)
+
         showFilterAction.set(filterState.value)
     }
 
     fun onAcceptDialog(state: CatalogFilterState) {
-        catalogFilterAnalytics.applyClick()
         if (filterState.value != state) {
             _filterState.value = state
             refreshReleases()
@@ -215,15 +193,12 @@ class CatalogViewModel @Inject constructor(
     }
 
     fun onCloseDialog() {
-        catalogFilterAnalytics.useTime(filterUseTimeCounter.elapsed())
     }
 
     fun onFastSearchClick() {
-        catalogAnalytics.fastSearchClick()
     }
 
     fun onFastSearchOpen() {
-        fastSearchAnalytics.open(AnalyticsConstants.screen_catalog)
     }
 
     fun onRemindClose() {
@@ -232,27 +207,22 @@ class CatalogViewModel @Inject constructor(
 
     fun onItemClick(item: ReleaseItemState) {
         val releaseItem = findRelease(item.id) ?: return
-        catalogAnalytics.releaseClick()
-        releaseAnalytics.open(AnalyticsConstants.screen_catalog, releaseItem.id.id)
         router.navigateTo(Screens.ReleaseDetails(releaseItem.id, releaseItem.code, releaseItem))
     }
 
     fun onCopyClick(item: ReleaseItemState) {
         val releaseItem = findRelease(item.id) ?: return
         systemUtils.copyToClipBoard(releaseItem.link.orEmpty())
-        releaseAnalytics.copyLink(AnalyticsConstants.screen_catalog, releaseItem.id.id)
     }
 
     fun onShareClick(item: ReleaseItemState) {
         val releaseItem = findRelease(item.id) ?: return
         systemUtils.shareText(releaseItem.link.orEmpty())
-        releaseAnalytics.share(AnalyticsConstants.screen_catalog, releaseItem.id.id)
     }
 
     fun onShortcutClick(item: ReleaseItemState) {
         val releaseItem = findRelease(item.id) ?: return
         shortcutHelper.addShortcut(releaseItem)
-        releaseAnalytics.shortcut(AnalyticsConstants.screen_catalog, releaseItem.id.id)
     }
 
     private fun findRelease(id: ReleaseId): Release? {

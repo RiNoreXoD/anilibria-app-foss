@@ -15,7 +15,6 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import ru.radiationx.anilibria.navigation.Screens
-import ru.radiationx.data.analytics.AnalyticsConstants
 import ru.radiationx.data.datasource.remote.address.ApiConfig
 import ru.radiationx.data.datasource.remote.fetchResponse
 import ru.radiationx.data.datasource.storage.ApiConfigStorage
@@ -122,7 +121,7 @@ class NotificationService : FirebaseMessagingService() {
         return when (remote.type) {
             CUSTOM_TYPE_APP_UPDATE -> {
                 Screens
-                    .AppUpdateScreen(true, AnalyticsConstants.notification_push_update)
+                    .AppUpdateScreen(true)
                     .createIntent(this)
             }
 

@@ -4,8 +4,6 @@ import android.app.ActivityManager
 import android.app.Application
 import android.content.Context
 import com.google.firebase.messaging.FirebaseMessaging
-import io.appmetrica.analytics.AppMetrica
-import io.appmetrica.analytics.AppMetricaConfig
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.launchIn
@@ -25,21 +23,10 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        initYandexAppMetrica()
 
         if (isMainProcess()) {
             initInMainProcess()
         }
-    }
-
-    private fun initYandexAppMetrica() {
-        //if (BuildConfig.DEBUG) return
-        val config = AppMetricaConfig
-            .newConfigBuilder("48d49aa0-6aad-407e-a738-717a6c77d603")
-            .withAnrMonitoring(true)
-            .build()
-        AppMetrica.activate(applicationContext, config)
-        AppMetrica.enableActivityAutoTracking(this)
     }
 
     @OptIn(DelicateCoroutinesApi::class)

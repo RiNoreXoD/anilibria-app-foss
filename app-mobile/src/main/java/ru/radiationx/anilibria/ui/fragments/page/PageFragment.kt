@@ -21,7 +21,6 @@ import ru.radiationx.anilibria.ui.common.Templates
 import ru.radiationx.anilibria.ui.fragments.BaseToolbarFragment
 import ru.radiationx.anilibria.ui.widgets.ExtendedWebView
 import ru.radiationx.anilibria.utils.ToolbarHelper
-import ru.radiationx.data.analytics.features.PageAnalytics
 import ru.radiationx.data.datasource.remote.address.ApiConfig
 import ru.radiationx.data.datasource.remote.api.PageApi
 import ru.radiationx.quill.get
@@ -35,7 +34,6 @@ import ru.radiationx.shared.ktx.android.putExtra
 import ru.radiationx.shared.ktx.android.setWebViewClientCompat
 import ru.radiationx.shared.ktx.android.toBase64
 import ru.radiationx.shared.ktx.android.toException
-import ru.radiationx.shared_app.analytics.LifecycleTimeCounter
 import ru.radiationx.shared_app.common.SystemUtils
 import timber.log.Timber
 
@@ -56,10 +54,6 @@ class PageFragment : BaseToolbarFragment<FragmentWebviewBinding>(R.layout.fragme
         }
     }
 
-    private val useTimeCounter by lazy {
-        LifecycleTimeCounter(pageAnalytics::useTime)
-    }
-
     private val argPath by lazy { getExtraNotNull<String>(ARG_PATH) }
 
     private val viewModel by viewModel<PageViewModel> {
@@ -73,8 +67,6 @@ class PageFragment : BaseToolbarFragment<FragmentWebviewBinding>(R.layout.fragme
     private val apiConfig by inject<ApiConfig>()
 
     private val systemUtils by inject<SystemUtils>()
-
-    private val pageAnalytics by inject<PageAnalytics>()
 
     private var webViewScrollPos = 0
 
@@ -92,7 +84,6 @@ class PageFragment : BaseToolbarFragment<FragmentWebviewBinding>(R.layout.fragme
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewLifecycleOwner.lifecycle.addObserver(useTimeCounter)
         //ToolbarHelper.setTransparent(toolbar, appbarLayout)
         //ToolbarHelper.setScrollFlag(toolbarLayout, AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED)
         ToolbarHelper.fixInsets(baseBinding.toolbar)
@@ -121,7 +112,6 @@ class PageFragment : BaseToolbarFragment<FragmentWebviewBinding>(R.layout.fragme
             }
 
             override fun onPageFinished(view: WebView, url: String) {
-                pageAnalytics.loaded()
             }
 
             override fun onReceivedSslError(
@@ -185,7 +175,6 @@ class PageFragment : BaseToolbarFragment<FragmentWebviewBinding>(R.layout.fragme
 
     private fun onPageError(error:Exception){
         Timber.e(error,"onPageError")
-        pageAnalytics.error()
     }
 
     override fun onResume() {

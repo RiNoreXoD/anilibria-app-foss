@@ -9,9 +9,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.radiationx.anilibria.ui.common.ErrorHandler
-import ru.radiationx.data.analytics.features.DonationYooMoneyAnalytics
-import ru.radiationx.data.analytics.features.model.AnalyticsDonationAmountType
-import ru.radiationx.data.analytics.features.model.AnalyticsDonationPaymentType
 import ru.radiationx.data.entity.domain.donation.yoomoney.YooMoneyDialog
 import ru.radiationx.data.repository.DonationRepository
 import ru.radiationx.shared.ktx.EventFlow
@@ -22,7 +19,6 @@ import javax.inject.Inject
 class DonationYooMoneyViewModel @Inject constructor(
     private val donationRepository: DonationRepository,
     private val errorHandler: ErrorHandler,
-    private val analytics: DonationYooMoneyAnalytics,
     private val systemUtils: SystemUtils
 ) : ViewModel() {
 
@@ -73,19 +69,10 @@ class DonationYooMoneyViewModel @Inject constructor(
         }
     }
 
-    fun submitHelpClickAnalytics() {
-        analytics.helpClick()
-    }
-
     fun onAcceptClick() {
         val amount = _state.value.getAmount()
         val paymentTypeId = _state.value.selectedPaymentTypeId ?: return
         val form = _state.value.data?.form ?: return
-        analytics.acceptClick(
-            amount,
-            _state.value.amountType.toAnalytics(),
-            paymentTypeId.toAnalyticsPaymentType()
-        )
         viewModelScope.launch {
             _state.update { it.copy(sending = true) }
             coRunCatching {
@@ -117,17 +104,5 @@ class DonationYooMoneyViewModel @Inject constructor(
             val newState = block.invoke(_state.value)
             newState.withValidation()
         }
-    }
-
-    private fun DonationYooMoneyState.AmountType.toAnalytics() = when (this) {
-        DonationYooMoneyState.AmountType.PRESET -> AnalyticsDonationAmountType.PRESET
-        DonationYooMoneyState.AmountType.CUSTOM -> AnalyticsDonationAmountType.CUSTOM
-    }
-
-    private fun String.toAnalyticsPaymentType() = when (this) {
-        YooMoneyDialog.TYPE_ID_ACCOUNT -> AnalyticsDonationPaymentType.ACCOUNT
-        YooMoneyDialog.TYPE_ID_CARD -> AnalyticsDonationPaymentType.CARD
-        YooMoneyDialog.TYPE_ID_MOBILE -> AnalyticsDonationPaymentType.MOBILE
-        else -> null
     }
 }

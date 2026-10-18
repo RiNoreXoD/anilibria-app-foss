@@ -15,39 +15,6 @@ import ru.radiationx.data.DataPreferences
 import ru.radiationx.data.MainClient
 import ru.radiationx.data.R
 import ru.radiationx.data.SimpleClient
-import ru.radiationx.data.ads.AdsConfigApi
-import ru.radiationx.data.ads.AdsConfigRepository
-import ru.radiationx.data.ads.AdsConfigStorage
-import ru.radiationx.data.analytics.features.ActivityLaunchAnalytics
-import ru.radiationx.data.analytics.features.AuthDeviceAnalytics
-import ru.radiationx.data.analytics.features.AuthMainAnalytics
-import ru.radiationx.data.analytics.features.AuthSocialAnalytics
-import ru.radiationx.data.analytics.features.AuthVkAnalytics
-import ru.radiationx.data.analytics.features.CatalogAnalytics
-import ru.radiationx.data.analytics.features.CatalogFilterAnalytics
-import ru.radiationx.data.analytics.features.CommentsAnalytics
-import ru.radiationx.data.analytics.features.ConfiguringAnalytics
-import ru.radiationx.data.analytics.features.DonationCardAnalytics
-import ru.radiationx.data.analytics.features.DonationDetailAnalytics
-import ru.radiationx.data.analytics.features.DonationDialogAnalytics
-import ru.radiationx.data.analytics.features.DonationYooMoneyAnalytics
-import ru.radiationx.data.analytics.features.FastSearchAnalytics
-import ru.radiationx.data.analytics.features.FavoritesAnalytics
-import ru.radiationx.data.analytics.features.FeedAnalytics
-import ru.radiationx.data.analytics.features.HistoryAnalytics
-import ru.radiationx.data.analytics.features.OtherAnalytics
-import ru.radiationx.data.analytics.features.PlayerAnalytics
-import ru.radiationx.data.analytics.features.ReleaseAnalytics
-import ru.radiationx.data.analytics.features.ScheduleAnalytics
-import ru.radiationx.data.analytics.features.SettingsAnalytics
-import ru.radiationx.data.analytics.features.SslCompatAnalytics
-import ru.radiationx.data.analytics.features.TeamsAnalytics
-import ru.radiationx.data.analytics.features.UpdaterAnalytics
-import ru.radiationx.data.analytics.features.WebPlayerAnalytics
-import ru.radiationx.data.analytics.features.YoutubeAnalytics
-import ru.radiationx.data.analytics.features.YoutubeVideosAnalytics
-import ru.radiationx.data.analytics.profile.AnalyticsInstallerProfileDataSource
-import ru.radiationx.data.analytics.profile.AnalyticsMainProfileDataSource
 import ru.radiationx.data.datasource.holders.AuthHolder
 import ru.radiationx.data.datasource.holders.CookieHolder
 import ru.radiationx.data.datasource.holders.DonationHolder
@@ -252,43 +219,6 @@ class DataModule(context: Context) : QuillModule() {
 
         single<HistoryRuntimeCache>()
 
-
-        /* Analytics */
-        single<ActivityLaunchAnalytics>()
-        single<SslCompatAnalytics>()
-        single<AnalyticsMainProfileDataSource>()
-        single<AnalyticsInstallerProfileDataSource>()
-        single<AuthDeviceAnalytics>()
-        single<AuthMainAnalytics>()
-        single<AuthSocialAnalytics>()
-        single<AuthVkAnalytics>()
-        single<CatalogAnalytics>()
-        single<CatalogFilterAnalytics>()
-        single<CommentsAnalytics>()
-        single<ConfiguringAnalytics>()
-        single<FastSearchAnalytics>()
-        single<FavoritesAnalytics>()
-        single<FeedAnalytics>()
-        single<HistoryAnalytics>()
-        single<OtherAnalytics>()
-        single<PlayerAnalytics>()
-        single<ReleaseAnalytics>()
-        single<ScheduleAnalytics>()
-        single<SettingsAnalytics>()
-        single<UpdaterAnalytics>()
-        single<WebPlayerAnalytics>()
-        single<YoutubeAnalytics>()
-        single<YoutubeVideosAnalytics>()
-        single<DonationCardAnalytics>()
-        single<DonationDetailAnalytics>()
-        single<DonationDialogAnalytics>()
-        single<DonationYooMoneyAnalytics>()
-        single<TeamsAnalytics>()
-
-        /* Ads */
-        single<AdsConfigApi>()
-        single<AdsConfigStorage>()
-        single<AdsConfigRepository>()
 
         /* Player */
         single<PlayerDataSourceProvider>()

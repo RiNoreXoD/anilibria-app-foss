@@ -38,5 +38,4 @@ dependencies {
 
     implementation(libs.cicerone)
 
-    api(libs.yandex.appmetrica)
 }

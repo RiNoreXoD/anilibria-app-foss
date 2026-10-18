@@ -13,10 +13,6 @@ import ru.radiationx.anilibria.model.SuggestionItemState
 import ru.radiationx.anilibria.model.SuggestionLocalItemState
 import ru.radiationx.anilibria.model.toState
 import ru.radiationx.anilibria.navigation.Screens
-import ru.radiationx.data.analytics.AnalyticsConstants
-import ru.radiationx.data.analytics.features.CatalogAnalytics
-import ru.radiationx.data.analytics.features.FastSearchAnalytics
-import ru.radiationx.data.analytics.features.ReleaseAnalytics
 import ru.radiationx.data.entity.domain.search.Suggestions
 import ru.radiationx.data.repository.SearchRepository
 import ru.radiationx.shared_app.common.SystemUtils
@@ -30,9 +26,6 @@ class FastSearchViewModel @Inject constructor(
     private val searchRepository: SearchRepository,
     private val router: Router,
     private val systemUtils: SystemUtils,
-    private val catalogAnalytics: CatalogAnalytics,
-    private val fastSearchAnalytics: FastSearchAnalytics,
-    private val releaseAnalytics: ReleaseAnalytics
 ) : ViewModel() {
 
     companion object {
@@ -78,23 +71,18 @@ class FastSearchViewModel @Inject constructor(
     }
 
     fun onItemClick(item: SuggestionItemState) {
-        fastSearchAnalytics.releaseClick()
-        releaseAnalytics.open(AnalyticsConstants.screen_fast_search, item.id.id)
         router.navigateTo(Screens.ReleaseDetails(item.id, item.code))
     }
 
     fun onLocalItemClick(item: SuggestionLocalItemState) {
         when (item.id) {
             ITEM_ID_GOOGLE -> {
-                fastSearchAnalytics.searchGoogleClick()
                 val urlQuery =
                     URLEncoder.encode("anilibria ${searchLoader.getQuery()?.query}", "utf-8")
                 systemUtils.externalLink("https://www.google.com/search?q=$urlQuery")
             }
 
             ITEM_ID_SEARCH -> {
-                catalogAnalytics.open(AnalyticsConstants.screen_fast_search)
-                fastSearchAnalytics.catalogClick()
                 router.navigateTo(Screens.Catalog())
             }
         }

@@ -9,7 +9,7 @@ import ru.radiationx.shared.ktx.android.WebResourceRequestCompat
 import ru.radiationx.shared.ktx.android.WebViewClientCompat
 import ru.radiationx.shared.ktx.android.toException
 
-class AnalyticsWebViewClient(
+class PageErrorWebViewClient(
     private val onPageCommitError: (Exception) -> Unit,
 ) : WebViewClientCompat() {
 

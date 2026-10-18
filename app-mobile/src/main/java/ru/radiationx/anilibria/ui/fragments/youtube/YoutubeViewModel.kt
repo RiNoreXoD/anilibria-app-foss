@@ -10,9 +10,6 @@ import kotlinx.coroutines.flow.update
 import ru.radiationx.anilibria.model.YoutubeItemState
 import ru.radiationx.anilibria.model.toState
 import ru.radiationx.anilibria.presentation.common.IErrorHandler
-import ru.radiationx.data.analytics.AnalyticsConstants
-import ru.radiationx.data.analytics.features.YoutubeAnalytics
-import ru.radiationx.data.analytics.features.YoutubeVideosAnalytics
 import ru.radiationx.data.entity.domain.types.YoutubeId
 import ru.radiationx.data.entity.domain.youtube.YoutubeItem
 import ru.radiationx.data.repository.YoutubeRepository
@@ -29,19 +26,15 @@ class YoutubeViewModel @Inject constructor(
     private val youtubeRepository: YoutubeRepository,
     private val errorHandler: IErrorHandler,
     private val systemUtils: SystemUtils,
-    private val youtubeAnalytics: YoutubeAnalytics,
-    private val youtubeVideosAnalytics: YoutubeVideosAnalytics,
 ) : ViewModel() {
 
     private val pageLoader = PageLoader(viewModelScope) {
-        submitPageAnalytics(it.page)
         getDataSource(it)
     }
 
     private val _state = MutableStateFlow(YoutubeScreenState())
     val state = _state.asStateFlow()
 
-    private var lastLoadedPage: Int? = null
 
     init {
         pageLoader
@@ -78,8 +71,6 @@ class YoutubeViewModel @Inject constructor(
 
     fun onItemClick(item: YoutubeItemState) {
         val rawItem = findItem(item.id) ?: return
-        youtubeVideosAnalytics.videoClick()
-        youtubeAnalytics.openVideo(AnalyticsConstants.screen_youtube, rawItem.id.id, rawItem.vid)
         systemUtils.externalLink(rawItem.link)
     }
 
@@ -87,12 +78,6 @@ class YoutubeViewModel @Inject constructor(
         return pageLoader.getData()?.firstOrNull { it.id == id }
     }
 
-    private fun submitPageAnalytics(page: Int) {
-        if (lastLoadedPage != page) {
-            youtubeVideosAnalytics.loadPage(page)
-            lastLoadedPage = page
-        }
-    }
 
     private suspend fun getDataSource(params: PageLoaderParams<List<YoutubeItem>>): PageLoaderAction.Data<List<YoutubeItem>> {
         return coRunCatching {
