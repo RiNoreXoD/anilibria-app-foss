@@ -168,16 +168,25 @@ class PlayerFlow(
     fun changePlaylist(playlist: List<PlaylistItem>) {
         withPlayer { player ->
             player.resetError()
+            val currentIndex = player.currentMediaItemIndex.takeIf { it != C.INDEX_UNSET } ?: 0
+            val currentPosition = player.currentPosition.takeIf { it != C.TIME_UNSET } ?: 0L
+            val isPlaying = player.isPlaying
+            val currentItem = playlist.getOrNull(currentIndex)
             _playlistState.update {
                 PlaylistState(
                     items = playlist,
-                    currentItem = playlist.getOrNull(player.currentMediaItemIndex)
+                    currentItem = currentItem
                 )
             }
             player.setMediaItems(
                 playlist.map { it.mediaItem },
-                false
+                currentIndex,
+                currentPosition
             )
+            player.prepare()
+            if (isPlaying) {
+                player.play()
+            }
         }
     }
 

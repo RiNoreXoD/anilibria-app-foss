@@ -112,7 +112,8 @@ class PlayerProxy {
     }
 
     fun setPlaybackSpeed(speed: Float) {
-        player.setPlaybackSpeed(speed)
+        commonState.speed = speed
+        _player?.setPlaybackSpeed(speed)
     }
 
     fun setVideoTextureView(textureView: TextureView) {
@@ -132,7 +133,6 @@ class PlayerProxy {
         mediaItemsState.position = player.currentPosition
 
         commonState.playWhenReady = player.playWhenReady
-        commonState.speed = player.playbackParameters.speed
         commonState.pauseAtEndOfMediaItems = player.pauseAtEndOfMediaItems
     }
 

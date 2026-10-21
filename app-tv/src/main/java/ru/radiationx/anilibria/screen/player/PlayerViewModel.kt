@@ -41,6 +41,7 @@ class PlayerViewModel @Inject constructor(
     private var currentEpisode: Episode? = null
     private var currentQuality: PlayerQuality? = null
     private var currentComplete: Boolean? = null
+    private var lastKnownPosition: Long? = null
 
     init {
         playerController.reset()
@@ -130,6 +131,7 @@ class PlayerViewModel @Inject constructor(
     fun onQualityClick(position: Long) {
         val release = getCurrentRelease() ?: return
         val episode = currentEpisode ?: return
+        lastKnownPosition = position
         saveEpisode(position)
         guidedRouter.open(PlayerQualityGuidedScreen(release.id, episode.id))
     }
@@ -197,6 +199,7 @@ class PlayerViewModel @Inject constructor(
     }
 
     private fun playEpisode(episode: Episode, force: Boolean = false) {
+        lastKnownPosition = null
         currentEpisode = episode
         currentComplete = null
         updateQuality()
@@ -218,9 +221,11 @@ class PlayerViewModel @Inject constructor(
         viewModelScope.launch {
             val newUrl = episode.qualityInfo.getSafeUrlFor(quality)
             val access = releaseInteractor.getAccess(episode.id)
+            val seek = lastKnownPosition ?: access?.seek ?: 0
+            lastKnownPosition = null
             val newVideo = Video(
                 url = newUrl,
-                seek = access?.seek ?: 0,
+                seek = seek,
                 title = release.title.orEmpty(),
                 subtitle = episode.title.orEmpty(),
                 episode.skips

@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import ru.radiationx.media.mobile.PlayerFlow
+import ru.radiationx.media.mobile.PlayerProxy
 import ru.radiationx.media.mobile.holder.PlayerAttachListener
 
 class SpeedController(
@@ -24,6 +25,11 @@ class SpeedController(
             }
             playerFlow.setSpeed(speed)
         }.launchIn(coroutineScope)
+    }
+
+    override fun attachPlayer(player: PlayerProxy) {
+        val speed = if (_state.value.longTap) 2f else _state.value.speed
+        playerFlow.setSpeed(speed)
     }
 
     fun setLongTapSeek(state: Boolean) {

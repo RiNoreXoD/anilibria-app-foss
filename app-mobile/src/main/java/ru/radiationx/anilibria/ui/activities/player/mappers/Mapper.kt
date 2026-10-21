@@ -39,7 +39,7 @@ fun Episode.toState(quality: PlayerQuality) = EpisodeState(
 
 fun EpisodeState.toPlaylistItem(): PlaylistItem {
     val mediaItem = MediaItem.Builder()
-        .setMediaId(id.toString())
+        .setMediaId("${id}_${url.hashCode()}")
         .setUri(Uri.parse(url))
         .setTag(this)
         .build()

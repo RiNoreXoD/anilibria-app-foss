@@ -44,6 +44,7 @@ import ru.radiationx.anilibria.ui.activities.player.mappers.toPlaylistItem
 import ru.radiationx.anilibria.ui.activities.player.models.PlayerAction
 import ru.radiationx.anilibria.ui.activities.player.playlist.PlaylistDialogFragment
 import ru.radiationx.data.entity.domain.types.EpisodeId
+import ru.radiationx.media.mobile.models.MediaItemTransition
 import ru.radiationx.media.mobile.models.PlayButtonState
 import ru.radiationx.quill.get
 import ru.radiationx.quill.inject
@@ -212,11 +213,14 @@ class VideoPlayerActivity : BaseActivity(R.layout.activity_videoplayer) {
             .launchIn(lifecycleScope)
 
         binding.playerView.mediaItemTransitionFlow
-            .onEach { binding.playerView.pause() }
             .onEach { transition ->
                 val episode = transition.mediaItem?.getEpisode() ?: return@onEach
-                viewModel.onEpisodeChanged(episode.id)
+                if (episode.id != viewModel.episodeId.value) {
+                    viewModel.onEpisodeChanged(episode.id)
+                }
             }
+            .filter { it.reason == MediaItemTransition.Reason.AUTO }
+            .onEach { binding.playerView.pause() }
             .mapLatest { transition ->
                 val timeline = binding.playerView.timelineState.first { it.duration > 0 }
                 transition to timeline

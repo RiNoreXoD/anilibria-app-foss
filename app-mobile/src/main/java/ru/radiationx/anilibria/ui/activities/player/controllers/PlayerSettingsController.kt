@@ -3,6 +3,7 @@ package ru.radiationx.anilibria.ui.activities.player.controllers
 import androidx.activity.ComponentActivity
 import envoy.DiffItem
 import envoy.ext.viewBindingEnvoy
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
@@ -16,6 +17,9 @@ import taiwa.TaiwaAction
 import taiwa.TaiwaAnchor
 import taiwa.bottomsheet.nestedBottomSheetTaiwa
 import java.math.BigDecimal
+import java.util.Locale
+import kotlin.math.abs
+import kotlin.math.roundToInt
 
 class PlayerSettingsController(
     private val activity: ComponentActivity,
@@ -184,10 +188,15 @@ class PlayerSettingsController(
     }
 }
 
-private fun Float.toSpeedValue() = if (this == 1.0f) {
-    "Нормальная"
-} else {
-    "${"${this}".trimEnd('0').trimEnd('.').trimEnd(',')}x"
+private fun Float.roundSpeed(): Float = (this * 100).roundToInt() / 100f
+
+private fun Float.toSpeedValue(): String {
+    val rounded = this.roundSpeed()
+    return if (abs(rounded - 1.0f) < 0.01f) {
+        "Нормальная"
+    } else {
+        String.format(Locale.US, "%.2f", rounded).trimEnd('0').trimEnd('.') + "x"
+    }
 }
 
 
@@ -197,65 +206,71 @@ private fun speedSelectorEnvoy(
     speedListener: (Float) -> Unit
 ) = viewBindingEnvoy<SpeedSelector, ItemPlayerSpeedsBinding> {
     val speedFlow = MutableSharedFlow<Float>()
+    var speedJob: Job? = null
 
     fun Float.coerceSpeed() = coerceIn(0.25f, 2.0f)
 
-    fun updateValue(block: (BigDecimal) -> BigDecimal) {
-        val init = view.seekbar.value.toBigDecimal()
-        val result = block.invoke(init).toFloat().coerceSpeed()
-        view.seekbar.value = result
+    fun selectSpeed(speed: Float) {
+        val rounded = speed.roundSpeed().coerceSpeed()
+        view.title.text = rounded.toSpeedValue()
+        if (abs(view.seekbar.value - rounded) >= 0.01f) {
+            view.seekbar.value = rounded
+        }
+        view.root.attachedCoroutineScope.launch {
+            speedFlow.emit(rounded)
+        }
     }
 
     view.seekbar.apply {
         valueFrom = 0.25f
         valueTo = 2.0f
         stepSize = 0.05f
-        addOnChangeListener { _, value, _ ->
-            view.title.text = value.toSpeedValue()
-            view.root.attachedCoroutineScope.launch {
-                speedFlow.emit(value)
+        addOnChangeListener { _, value, fromUser ->
+            val rounded = value.roundSpeed()
+            view.title.text = rounded.toSpeedValue()
+            if (fromUser) {
+                view.root.attachedCoroutineScope.launch {
+                    speedFlow.emit(rounded)
+                }
             }
         }
     }
+
     view.minusSpeed.setOnClickListener {
-        updateValue { it - view.seekbar.stepSize.toBigDecimal() }
+        val current = (view.seekbar.value.toBigDecimal() - view.seekbar.stepSize.toBigDecimal()).toFloat()
+        selectSpeed(current)
     }
 
     view.plusSpeed.setOnClickListener {
-        updateValue { it + view.seekbar.stepSize.toBigDecimal() }
+        val current = (view.seekbar.value.toBigDecimal() + view.seekbar.stepSize.toBigDecimal()).toFloat()
+        selectSpeed(current)
     }
 
-    view.chip1.setOnClickListener {
-        view.seekbar.value = 1f
-    }
-
-    view.chip2.setOnClickListener {
-        view.seekbar.value = 1.25f
-    }
-
-    view.chip3.setOnClickListener {
-        view.seekbar.value = 1.5f
-    }
-
-    view.chip4.setOnClickListener {
-        view.seekbar.value = 1.75f
-    }
-
-    view.chip5.setOnClickListener {
-        view.seekbar.value = 2.0f
-    }
+    view.chip1.setOnClickListener { selectSpeed(1f) }
+    view.chip2.setOnClickListener { selectSpeed(1.25f) }
+    view.chip3.setOnClickListener { selectSpeed(1.5f) }
+    view.chip4.setOnClickListener { selectSpeed(1.75f) }
+    view.chip5.setOnClickListener { selectSpeed(2.0f) }
 
     attach {
-        speedFlow
+        speedJob?.cancel()
+        speedJob = speedFlow
             .debounce(300)
             .onEach { speedListener.invoke(it) }
             .launchIn(view.root.attachedCoroutineScope)
     }
 
+    detach {
+        speedJob?.cancel()
+        speedJob = null
+    }
+
     bind {
-        val coercedSpeed = it.speed.coerceSpeed()
+        val coercedSpeed = it.speed.roundSpeed().coerceSpeed()
         view.title.text = coercedSpeed.toSpeedValue()
-        view.seekbar.value = coercedSpeed
+        if (abs(view.seekbar.value - coercedSpeed) >= 0.01f) {
+            view.seekbar.value = coercedSpeed
+        }
     }
 }
 

@@ -9,6 +9,7 @@ import ru.radiationx.anilibria.common.fragment.GuidedRouter
 import ru.radiationx.anilibria.screen.LifecycleViewModel
 import ru.radiationx.data.datasource.holders.PreferencesHolder
 import javax.inject.Inject
+import kotlin.math.abs
 
 class PlayerSpeedViewModel @Inject constructor(
     private val preferencesHolder: PreferencesHolder,
@@ -24,7 +25,7 @@ class PlayerSpeedViewModel @Inject constructor(
         ) { speeds, speed ->
             SpeedState(
                 speeds = speeds,
-                selectedIndex = speeds.indexOf(speed)
+                selectedIndex = speeds.indexOfFirst { abs(it - speed) < 0.01f }
             )
         }.onEach {
             speedState.value = it
