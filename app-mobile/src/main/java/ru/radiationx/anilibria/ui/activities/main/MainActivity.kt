@@ -121,7 +121,7 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
         viewModel.init(savedInstanceState?.getString(SELECTED_TAB))
         savedInstanceState?.getStringArrayList(TABS_STACK)?.also {
             if (it.isNotEmpty()) {
-                tabsStack.addAll(it)
+                tabsStack.addAll(it.filter { key -> allTabs.any { tab -> tab.screen.screenKey == key } })
             }
         }
 
@@ -387,9 +387,9 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
     }
 
     private fun highlightTab(screenKey: String) {
-        tabsAdapter.setSelected(screenKey)
-        val screen = tabs.first { it.screen.screenKey == screenKey }.screen
-        router.replaceScreen(screen)
+        val tab = tabs.firstOrNull { it.screen.screenKey == screenKey } ?: tabs.first()
+        tabsAdapter.setSelected(tab.screen.screenKey)
+        router.replaceScreen(tab.screen)
     }
 
     fun addInStack(screenKey: String) {
