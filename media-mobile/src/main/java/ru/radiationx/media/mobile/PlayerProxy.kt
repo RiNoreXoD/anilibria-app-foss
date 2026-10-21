@@ -56,8 +56,12 @@ class PlayerProxy {
     val isPlaying: Boolean
         get() = player.isPlaying
 
-    val playWhenReady: Boolean
+    var playWhenReady: Boolean
         get() = player.playWhenReady
+        set(value) {
+            commonState.playWhenReady = value
+            _player?.playWhenReady = value
+        }
 
     val currentMediaItemIndex: Int
         get() = player.currentMediaItemIndex

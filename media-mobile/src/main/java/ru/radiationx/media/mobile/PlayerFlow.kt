@@ -184,7 +184,11 @@ class PlayerFlow(
                 currentPosition
             )
             player.prepare()
-            player.playWhenReady = playWhenReady
+            if (playWhenReady) {
+                player.play()
+            } else {
+                player.pause()
+            }
         }
     }
 
