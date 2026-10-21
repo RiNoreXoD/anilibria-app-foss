@@ -5,7 +5,6 @@
     <string name="fragment_title_other">Прочее</string>
     <string name="fragment_title_release">Релиз</string>
     <string name="fragment_title_favorites">Избранное</string>
-    <string name="fragment_title_youtube">YouTube</string>
     <string name="fragment_title_search">Поиск</string>
     <string name="fragment_title_schedule">Расписание</string>
 

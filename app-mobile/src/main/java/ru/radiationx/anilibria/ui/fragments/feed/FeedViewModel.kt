@@ -23,7 +23,6 @@ import ru.mintrocket.lib.mintpermissions.flows.MintPermissionsDialogFlow
 import ru.radiationx.anilibria.model.DonationCardItemState
 import ru.radiationx.anilibria.model.ReleaseItemState
 import ru.radiationx.anilibria.model.ScheduleItemState
-import ru.radiationx.anilibria.model.YoutubeItemState
 import ru.radiationx.anilibria.model.toState
 import ru.radiationx.anilibria.navigation.Screens
 import ru.radiationx.anilibria.presentation.common.IErrorHandler
@@ -35,8 +34,6 @@ import ru.radiationx.data.entity.domain.feed.ScheduleItem
 import ru.radiationx.data.entity.domain.release.Release
 import ru.radiationx.data.entity.domain.release.ReleaseUpdate
 import ru.radiationx.data.entity.domain.types.ReleaseId
-import ru.radiationx.data.entity.domain.types.YoutubeId
-import ru.radiationx.data.entity.domain.youtube.YoutubeItem
 import ru.radiationx.data.interactors.ReleaseInteractor
 import ru.radiationx.data.repository.CheckerRepository
 import ru.radiationx.data.repository.DonationRepository
@@ -204,11 +201,6 @@ class FeedViewModel @Inject constructor(
         router.navigateTo(Screens.ReleaseDetails(releaseItem.id, releaseItem.code, releaseItem))
     }
 
-    fun onYoutubeClick(item: YoutubeItemState) {
-        val youtubeItem = findYoutube(item.id) ?: return
-        systemUtils.externalLink(youtubeItem.link)
-    }
-
     fun onSchedulesClick() {
         router.navigateTo(Screens.Schedule())
     }
@@ -273,16 +265,6 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    fun onCopyClick(item: YoutubeItemState) {
-        val releaseItem = findYoutube(item.id) ?: return
-        systemUtils.copyToClipBoard(releaseItem.link)
-    }
-
-    fun onShareClick(item: YoutubeItemState) {
-        val releaseItem = findYoutube(item.id) ?: return
-        systemUtils.shareText(releaseItem.link)
-    }
-
     fun onCopyClick(item: ReleaseItemState) {
         val releaseItem = findRelease(item.id) ?: findScheduleRelease(item.id) ?: return
         systemUtils.copyToClipBoard(releaseItem.link.orEmpty())
@@ -316,13 +298,6 @@ class FeedViewModel @Inject constructor(
         val feedItems = pageLoader.getData()?.feedItems ?: return null
         return feedItems
             .mapNotNull { it.release }
-            .find { it.id == id }
-    }
-
-    private fun findYoutube(id: YoutubeId): YoutubeItem? {
-        val feedItems = pageLoader.getData()?.feedItems ?: return null
-        return feedItems
-            .mapNotNull { it.youtube }
             .find { it.id == id }
     }
 
@@ -367,7 +342,7 @@ class FeedViewModel @Inject constructor(
                 val schedule = scheduleAsync.await()
 
                 val newFeedItems = params.appendData {
-                    it?.feedItems.orEmpty() + newPage
+                    it?.feedItems.orEmpty() + newPage.filter { item -> item.release != null }
                 }
 
                 params.toDataAction(newPage.isNotEmpty()) {

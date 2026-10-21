@@ -27,7 +27,6 @@ import ru.radiationx.anilibria.ui.fragments.release.details.ReleaseFragment
 import ru.radiationx.anilibria.ui.fragments.schedule.ScheduleFragment
 import ru.radiationx.anilibria.ui.fragments.search.SearchCatalogFragment
 import ru.radiationx.anilibria.ui.fragments.teams.TeamsFragment
-import ru.radiationx.anilibria.ui.fragments.youtube.YoutubeFragment
 import ru.radiationx.data.entity.domain.release.Release
 import ru.radiationx.data.entity.domain.types.EpisodeId
 import ru.radiationx.data.entity.domain.types.ReleaseCode
@@ -153,11 +152,6 @@ object Screens {
 
     class MainFeed : BaseFragmentScreen() {
         override fun createFragment(factory: FragmentFactory) = FeedFragment()
-    }
-
-
-    class MainYouTube : BaseFragmentScreen() {
-        override fun createFragment(factory: FragmentFactory) = YoutubeFragment()
     }
 
     class MainOther : BaseFragmentScreen() {

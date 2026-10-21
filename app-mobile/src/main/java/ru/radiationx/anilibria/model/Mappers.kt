@@ -11,7 +11,6 @@ import ru.radiationx.data.entity.domain.release.Release
 import ru.radiationx.data.entity.domain.release.ReleaseUpdate
 import ru.radiationx.data.entity.domain.search.SuggestionItem
 import ru.radiationx.data.entity.domain.types.ReleaseId
-import ru.radiationx.data.entity.domain.youtube.YoutubeItem
 
 fun Release.toState(updates: Map<ReleaseId, ReleaseUpdate>): ReleaseItemState {
     val title = if (series == null) {
@@ -32,18 +31,9 @@ fun Release.toState(updates: Map<ReleaseId, ReleaseUpdate>): ReleaseItemState {
     )
 }
 
-fun YoutubeItem.toState() = YoutubeItemState(
-    id = id,
-    title = title.orEmpty(),
-    image = image.orEmpty(),
-    views = views.toString(),
-    comments = comments.toString()
-)
-
 fun FeedItem.toState(updates: Map<ReleaseId, ReleaseUpdate>) = FeedItemState(
     id = id,
-    release = release?.toState(updates),
-    youtube = youtube?.toState()
+    release = release?.toState(updates)
 )
 
 fun ScheduleItem.toState() = ScheduleItemState(

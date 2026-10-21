@@ -4,7 +4,6 @@ import android.view.View
 import ru.radiationx.anilibria.model.DonationCardItemState
 import ru.radiationx.anilibria.model.ReleaseItemState
 import ru.radiationx.anilibria.model.ScheduleItemState
-import ru.radiationx.anilibria.model.YoutubeItemState
 import ru.radiationx.anilibria.ui.adapters.AppInfoCardListItem
 import ru.radiationx.anilibria.ui.adapters.AppWarningCardListItem
 import ru.radiationx.anilibria.ui.adapters.DividerShadowListItem
@@ -26,7 +25,6 @@ import ru.radiationx.anilibria.ui.adapters.feed.FeedRandomBtnDelegate
 import ru.radiationx.anilibria.ui.adapters.feed.FeedReleaseDelegate
 import ru.radiationx.anilibria.ui.adapters.feed.FeedSchedulesDelegate
 import ru.radiationx.anilibria.ui.adapters.feed.FeedSectionDelegate
-import ru.radiationx.anilibria.ui.adapters.feed.FeedYoutubeDelegate
 import ru.radiationx.anilibria.ui.adapters.global.LoadErrorDelegate
 import ru.radiationx.anilibria.ui.adapters.global.LoadMoreDelegate
 import ru.radiationx.anilibria.ui.adapters.other.DividerShadowItemDelegate
@@ -47,8 +45,6 @@ class FeedAdapter(
     randomClickListener: () -> Unit,
     releaseClickListener: (ReleaseItemState, View) -> Unit,
     releaseLongClickListener: (ReleaseItemState) -> Unit,
-    youtubeClickListener: (YoutubeItemState) -> Unit,
-    youtubeLongClickListener: (YoutubeItemState) -> Unit,
     scheduleClickListener: (ScheduleItemState, View, Int) -> Unit,
     private val emptyPlaceHolder: PlaceholderListItem,
     private val errorPlaceHolder: PlaceholderListItem,
@@ -80,7 +76,6 @@ class FeedAdapter(
             )
         )
         addDelegate(FeedReleaseDelegate(releaseClickListener, releaseLongClickListener))
-        addDelegate(FeedYoutubeDelegate(youtubeClickListener, youtubeLongClickListener))
         addDelegate(FeedRandomBtnDelegate(randomClickListener))
         addDelegate(DividerShadowItemDelegate())
         addDelegate(PlaceholderDelegate())
@@ -133,24 +128,8 @@ class FeedAdapter(
             )
             newItems.add(FeedRandomBtnListItem("random"))
 
-            var lastType: String? = null
-            feedItems.forEach { data ->
-                val type = when {
-                    data.release != null -> "release"
-                    data.youtube != null -> "youtube"
-                    else -> throw IllegalStateException("Unknown item type")
-                }
-                val item = FeedListItem(data)
-                if (lastType != null && lastType != type) {
-                    newItems.add(
-                        DividerShadowListItem(
-                            ShadowDirection.Double,
-                            "$type, ${item.getItemId()}"
-                        )
-                    )
-                }
-                newItems.add(item)
-                lastType = type
+            feedItems.filter { it.release != null }.forEach { data ->
+                newItems.add(FeedListItem(data))
             }
         }
 

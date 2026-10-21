@@ -7,7 +7,6 @@ import ru.radiationx.anilibria.model.ScheduleItemState
 import ru.radiationx.anilibria.model.SocialAuthItemState
 import ru.radiationx.anilibria.model.SuggestionItemState
 import ru.radiationx.anilibria.model.SuggestionLocalItemState
-import ru.radiationx.anilibria.model.YoutubeItemState
 import ru.radiationx.anilibria.ui.activities.main.MainActivity
 import ru.radiationx.anilibria.ui.adapters.release.detail.EpisodeControlPlace
 import ru.radiationx.anilibria.ui.fragments.feed.FeedAppWarning
@@ -113,8 +112,6 @@ data class ReleaseHeadListItem(
 data class SuggestionLocalListItem(val state: SuggestionLocalItemState) : ListItem(state.id)
 
 data class SuggestionListItem(val state: SuggestionItemState) : ListItem(state.id)
-
-data class YoutubeListItem(val state: YoutubeItemState) : ListItem(state.id)
 
 data class SocialAuthListItem(val state: SocialAuthItemState) : ListItem(state.key)
 

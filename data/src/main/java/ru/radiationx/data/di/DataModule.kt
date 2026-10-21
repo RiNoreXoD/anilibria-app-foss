@@ -45,7 +45,6 @@ import ru.radiationx.data.datasource.remote.api.ReleaseApi
 import ru.radiationx.data.datasource.remote.api.ScheduleApi
 import ru.radiationx.data.datasource.remote.api.SearchApi
 import ru.radiationx.data.datasource.remote.api.TeamsApi
-import ru.radiationx.data.datasource.remote.api.YoutubeApi
 import ru.radiationx.data.datasource.remote.interceptors.UnauthorizedInterceptor
 import ru.radiationx.data.datasource.remote.parsers.AuthParser
 import ru.radiationx.data.datasource.remote.parsers.PagesParser
@@ -97,7 +96,6 @@ import ru.radiationx.data.repository.ReleaseRepository
 import ru.radiationx.data.repository.ScheduleRepository
 import ru.radiationx.data.repository.SearchRepository
 import ru.radiationx.data.repository.TeamsRepository
-import ru.radiationx.data.repository.YoutubeRepository
 import ru.radiationx.data.sslcompat.SslCompat
 import ru.radiationx.data.system.ApiUtils
 import ru.radiationx.data.system.AppCookieJar
@@ -190,7 +188,6 @@ class DataModule(context: Context) : QuillModule() {
         single<ReleaseApi>()
         single<SearchApi>()
         single<PageApi>()
-        single<YoutubeApi>()
         single<ScheduleApi>()
         single<FeedApi>()
         single<MenuApi>()
@@ -205,7 +202,6 @@ class DataModule(context: Context) : QuillModule() {
         single<CheckerRepository>()
         single<HistoryRepository>()
         single<FavoriteRepository>()
-        single<YoutubeRepository>()
         single<ScheduleRepository>()
         single<FeedRepository>()
         single<MenuRepository>()

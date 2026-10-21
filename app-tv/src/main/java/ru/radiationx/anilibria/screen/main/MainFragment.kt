@@ -36,13 +36,11 @@ class MainFragment : RowsSupportFragment() {
     private val feedViewModel by quillParentViewModel<MainFeedViewModel>()
     private val scheduleViewModel by quillParentViewModel<MainScheduleViewModel>()
     private val favoritesViewModel by quillParentViewModel<MainFavoritesViewModel>()
-    private val youtubeViewModel by quillParentViewModel<MainYouTubeViewModel>()
 
     private fun getViewModel(rowId: Long): BaseCardsViewModel? = when (rowId) {
         MainViewModel.FEED_ROW_ID -> feedViewModel
         MainViewModel.SCHEDULE_ROW_ID -> scheduleViewModel
         MainViewModel.FAVORITE_ROW_ID -> favoritesViewModel
-        MainViewModel.YOUTUBE_ROW_ID -> youtubeViewModel
         else -> null
     }
 
@@ -53,7 +51,6 @@ class MainFragment : RowsSupportFragment() {
         viewLifecycleOwner.lifecycle.addObserver(feedViewModel)
         viewLifecycleOwner.lifecycle.addObserver(scheduleViewModel)
         viewLifecycleOwner.lifecycle.addObserver(favoritesViewModel)
-        viewLifecycleOwner.lifecycle.addObserver(youtubeViewModel)
 
         adapter = rowsAdapter
         onItemViewSelectedListener = ItemViewSelectedListener()

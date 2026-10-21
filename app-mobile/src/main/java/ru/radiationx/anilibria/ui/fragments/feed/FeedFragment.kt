@@ -17,7 +17,6 @@ import ru.radiationx.anilibria.extension.disableItemChangeAnimation
 import ru.radiationx.anilibria.model.ReleaseItemState
 import ru.radiationx.anilibria.ui.adapters.PlaceholderListItem
 import ru.radiationx.anilibria.ui.common.releaseItemDialog
-import ru.radiationx.anilibria.ui.common.youtubeItemDialog
 import ru.radiationx.anilibria.ui.fragments.BaseSearchFragment
 import ru.radiationx.anilibria.ui.fragments.SharedProvider
 import ru.radiationx.anilibria.ui.fragments.TopScroller
@@ -60,11 +59,6 @@ class FeedFragment :
             viewModel.onItemClick(releaseItem)
         }, releaseLongClickListener = { releaseItem ->
             releaseOnLongClick(releaseItem)
-        }, youtubeClickListener = { youtubeItem ->
-            viewModel.onYoutubeClick(youtubeItem)
-        },
-        youtubeLongClickListener = {
-            youtubeDialog.show(it)
         }, scheduleClickListener = { feedScheduleItem, view, position ->
             this.sharedViewLocal = view
             viewModel.onScheduleItemClick(feedScheduleItem, position)
@@ -93,11 +87,6 @@ class FeedFragment :
         onCopyClick = { viewModel.onCopyClick(it) },
         onShareClick = { viewModel.onShareClick(it) },
         onShortcutClick = { viewModel.onShortcutClick(it) }
-    )
-
-    private val youtubeDialog by youtubeItemDialog(
-        onCopyClick = { viewModel.onCopyClick(it) },
-        onShareClick = { viewModel.onShareClick(it) },
     )
 
     override var sharedViewLocal: View? = null

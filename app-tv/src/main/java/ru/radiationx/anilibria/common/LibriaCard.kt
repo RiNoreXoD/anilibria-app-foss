@@ -15,6 +15,5 @@ data class LibriaCard(
 
     sealed class Type {
         data class Release(val releaseId: ReleaseId) : Type()
-        data class Youtube(val link: String) : Type()
     }
 }

@@ -31,7 +31,7 @@ class MainFeedViewModel @Inject constructor(
                 .updateItemsCache(items.filter { it.release != null }
                     .map { it.release!! })
         }
-        .let { feedList -> feedList.map { converter.toCard(it) } }
+        .let { feedList -> feedList.mapNotNull { converter.toCard(it) } }
 
     override fun onLibriaCardClick(card: LibriaCard) {
         super.onLibriaCardClick(card)
