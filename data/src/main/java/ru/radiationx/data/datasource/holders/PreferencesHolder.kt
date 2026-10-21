@@ -54,7 +54,7 @@ class AppPreference<T>(
 
     private val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
         if (key == this.key) {
-            _state.value = value
+            _state.value = get(sharedPreferences, key)
         }
     }
 
@@ -68,6 +68,7 @@ class AppPreference<T>(
     override var value: T
         get() = get(sharedPreferences, key)
         set(value) {
+            _state.value = value
             sharedPreferences.edit { set(key, value) }
         }
 

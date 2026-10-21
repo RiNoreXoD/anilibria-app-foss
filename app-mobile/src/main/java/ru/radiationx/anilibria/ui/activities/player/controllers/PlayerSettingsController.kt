@@ -3,15 +3,8 @@ package ru.radiationx.anilibria.ui.activities.player.controllers
 import androidx.activity.ComponentActivity
 import envoy.DiffItem
 import envoy.ext.viewBindingEnvoy
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import ru.radiationx.anilibria.R
 import ru.radiationx.anilibria.databinding.ItemPlayerSpeedsBinding
-import ru.radiationx.anilibria.utils.view.attachedCoroutineScope
 import ru.radiationx.data.entity.common.PlayerQuality
 import taiwa.TaiwaAction
 import taiwa.TaiwaAnchor
@@ -205,8 +198,6 @@ private data class SpeedSelector(val speed: Float) : DiffItem("speed")
 private fun speedSelectorEnvoy(
     speedListener: (Float) -> Unit
 ) = viewBindingEnvoy<SpeedSelector, ItemPlayerSpeedsBinding> {
-    val speedFlow = MutableSharedFlow<Float>()
-    var speedJob: Job? = null
 
     fun Float.coerceSpeed() = coerceIn(0.25f, 2.0f)
 
@@ -216,9 +207,7 @@ private fun speedSelectorEnvoy(
         if (abs(view.seekbar.value - rounded) >= 0.01f) {
             view.seekbar.value = rounded
         }
-        view.root.attachedCoroutineScope.launch {
-            speedFlow.emit(rounded)
-        }
+        speedListener.invoke(rounded)
     }
 
     view.seekbar.apply {
@@ -229,9 +218,7 @@ private fun speedSelectorEnvoy(
             val rounded = value.roundSpeed()
             view.title.text = rounded.toSpeedValue()
             if (fromUser) {
-                view.root.attachedCoroutineScope.launch {
-                    speedFlow.emit(rounded)
-                }
+                speedListener.invoke(rounded)
             }
         }
     }
@@ -251,19 +238,6 @@ private fun speedSelectorEnvoy(
     view.chip3.setOnClickListener { selectSpeed(1.5f) }
     view.chip4.setOnClickListener { selectSpeed(1.75f) }
     view.chip5.setOnClickListener { selectSpeed(2.0f) }
-
-    attach {
-        speedJob?.cancel()
-        speedJob = speedFlow
-            .debounce(300)
-            .onEach { speedListener.invoke(it) }
-            .launchIn(view.root.attachedCoroutineScope)
-    }
-
-    detach {
-        speedJob?.cancel()
-        speedJob = null
-    }
 
     bind {
         val coercedSpeed = it.speed.roundSpeed().coerceSpeed()

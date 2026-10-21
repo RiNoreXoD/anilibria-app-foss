@@ -170,7 +170,7 @@ class PlayerFlow(
             player.resetError()
             val currentIndex = player.currentMediaItemIndex.takeIf { it != C.INDEX_UNSET } ?: 0
             val currentPosition = player.currentPosition.takeIf { it != C.TIME_UNSET } ?: 0L
-            val isPlaying = player.isPlaying
+            val playWhenReady = player.playWhenReady
             val currentItem = playlist.getOrNull(currentIndex)
             _playlistState.update {
                 PlaylistState(
@@ -184,9 +184,7 @@ class PlayerFlow(
                 currentPosition
             )
             player.prepare()
-            if (isPlaying) {
-                player.play()
-            }
+            player.playWhenReady = playWhenReady
         }
     }
 

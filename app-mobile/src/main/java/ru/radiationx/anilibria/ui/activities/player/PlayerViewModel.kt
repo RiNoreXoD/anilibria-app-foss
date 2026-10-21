@@ -98,6 +98,17 @@ class PlayerViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
+    fun changeQuality(quality: PlayerQuality) {
+        preferencesHolder.playerQuality.value = quality
+        withData { data ->
+            val episodeStates = data.episodes.map { it.toState(quality) }
+            val action = PlayerAction.PlaylistChange(episodeStates)
+            viewModelScope.launch {
+                _actions.emit(action)
+            }
+        }
+    }
+
     fun initialPlayEpisode(episodeId: EpisodeId) {
         loadData(episodeId)
     }

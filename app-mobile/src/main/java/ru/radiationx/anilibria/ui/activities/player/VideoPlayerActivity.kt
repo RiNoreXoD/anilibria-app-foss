@@ -301,10 +301,11 @@ class VideoPlayerActivity : BaseActivity(R.layout.activity_videoplayer) {
 
     private fun initSettingsController() {
         settingsController.onQualitySelected = {
-            settingsViewModel.onQualitySelected(it)
+            viewModel.changeQuality(it)
         }
 
         settingsController.onSpeedSelected = {
+            binding.playerView.setSpeed(it)
             settingsViewModel.onSpeedSelected(it)
         }
 
