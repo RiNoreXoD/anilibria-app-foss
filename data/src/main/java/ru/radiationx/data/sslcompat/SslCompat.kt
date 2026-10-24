@@ -42,35 +42,38 @@ class SslCompat @Inject constructor(
 
     private fun createTrustManager(): X509TrustManager {
         val defaultTrustManager = Conscrypt.getDefaultX509TrustManager()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N || rawCertResources.isEmpty()) {
             return defaultTrustManager
         }
-        val compatKeyStore = createCompatKeyStore()
+        val compatKeyStore = createCompatKeyStore() ?: return defaultTrustManager
         return CompatTrustManager(
             defaultManager = defaultTrustManager,
-            additionalKeyStores = listOfNotNull(compatKeyStore)
+            additionalKeyStores = listOf(compatKeyStore)
         )
     }
 
     private fun createCompatKeyStore(): KeyStore? {
-        val keyStoreType = KeyStore.getDefaultType()
-        val keyStore = KeyStore.getInstance(keyStoreType).apply {
-            load(null, null)
-        }
+        if (rawCertResources.isEmpty()) return null
+        return runCatching {
+            val keyStoreType = KeyStore.getDefaultType()
+            val keyStore = KeyStore.getInstance(keyStoreType).apply {
+                load(null, null)
+            }
 
-        val factory = CertificateFactory.getInstance("X.509")
-        rawCertResources.forEach { rawResource ->
-            val alias = try {
-                context.resources.getResourceName(rawResource)
-            } catch (ex: Exception) {
-                "$rawResource"
+            val factory = CertificateFactory.getInstance("X.509")
+            rawCertResources.forEach { rawResource ->
+                val alias = try {
+                    context.resources.getResourceName(rawResource)
+                } catch (ex: Exception) {
+                    "$rawResource"
+                }
+                val certificate = context.resources.openRawResource(rawResource).use {
+                    factory.generateCertificate(it)
+                }
+                keyStore.setCertificateEntry(alias, certificate)
             }
-            val certificate = context.resources.openRawResource(rawResource).use {
-                factory.generateCertificate(it)
-            }
-            keyStore.setCertificateEntry(alias, certificate)
-        }
-        return keyStore
+            keyStore
+        }.getOrNull()
     }
 
     class Data(

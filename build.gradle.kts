@@ -11,6 +11,25 @@ tasks.register<Delete>("clean") {
 }
 
 allprojects {
+    configurations.all {
+        resolutionStrategy {
+            force("org.bouncycastle:bcprov-jdk18on:1.85")
+            force("org.jdom:jdom2:2.0.6.1")
+            force("io.netty:netty-handler:4.1.137.Final")
+            force("io.netty:netty-codec-http:4.1.137.Final")
+            force("org.bitbucket.b_c:jose4j:0.9.6")
+            force("org.apache.commons:commons-lang3:3.18.0")
+            force("com.google.guava:guava:32.0.0-android")
+            force("com.google.android.gms:play-services-basement:18.0.2")
+            force("org.apache.httpcomponents:httpclient:4.5.13")
+            eachDependency {
+                if (requested.group == "io.netty") {
+                    useVersion("4.1.137.Final")
+                }
+            }
+        }
+    }
+
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         compilerOptions{
             freeCompilerArgs.add("-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi")
