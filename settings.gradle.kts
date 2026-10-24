@@ -14,6 +14,7 @@ buildscript {
     dependencies {
         classpath("org.bouncycastle:bcprov-jdk18on:1.85")
         classpath("org.jdom:jdom2:2.0.6.1")
+        classpath("io.netty:netty-handler:4.1.137.Final")
     }
 }
 

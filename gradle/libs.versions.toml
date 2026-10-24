@@ -46,6 +46,7 @@ google-material = "1.13.0"
 media3 = "1.8.0"
 minitemplator = "1.4.1"
 mintpermissions = "1.1.2"
+netty = "4.1.137.Final"
 moshi = "1.15.2"
 okhttp = "5.3.2"
 androidx-palette = "1.0.0"
@@ -106,6 +107,7 @@ media3-ui-leanback = { module = "androidx.media3:media3-ui-leanback", version.re
 minitemplator = { module = "org.bsc.util:minitemplator-repackaged", version.ref = "minitemplator" }
 mintpermissions-flows = { module = "com.github.mintrocket.MintPermissions:mintpermissions-flows", version.ref = "mintpermissions" }
 mintpermissions = { module = "com.github.mintrocket.MintPermissions:mintpermissions", version.ref = "mintpermissions" }
+netty-handler = { module = "io.netty:netty-handler", version.ref = "netty" }
 moshi = { module = "com.squareup.moshi:moshi", version.ref = "moshi" }
 moshi-adapters = { module = "com.squareup.moshi:moshi-adapters", version.ref = "moshi" }
 moshi-compiler = { module = "com.squareup.moshi:moshi-kotlin-codegen", version.ref = "moshi" }
