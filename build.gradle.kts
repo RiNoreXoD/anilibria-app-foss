@@ -20,7 +20,6 @@ allprojects {
             force("org.bitbucket.b_c:jose4j:0.9.6")
             force("org.apache.commons:commons-lang3:3.18.0")
             force("com.google.guava:guava:32.0.0-android")
-            force("org.jetbrains.kotlin:kotlin-gradle-plugin:2.4.20-Beta1")
             force("com.google.android.gms:play-services-basement:18.0.2")
             force("org.apache.httpcomponents:httpclient:4.5.13")
             eachDependency {
