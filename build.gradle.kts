@@ -22,6 +22,7 @@ allprojects {
             force("com.google.guava:guava:32.0.0-android")
             force("org.jetbrains.kotlin:kotlin-gradle-plugin:2.4.20-Beta1")
             force("com.google.android.gms:play-services-basement:18.0.2")
+            force("org.apache.httpcomponents:httpclient:4.5.13")
             eachDependency {
                 if (requested.group == "io.netty") {
                     useVersion("4.1.137.Final")

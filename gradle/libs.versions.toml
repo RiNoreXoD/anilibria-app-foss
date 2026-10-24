@@ -46,6 +46,7 @@ chucker = "4.3.0"
 androidx-lifecycle = "2.9.4"
 google-material = "1.13.0"
 guava = "32.0.0-android"
+httpclient = "4.5.13"
 media3 = "1.8.0"
 minitemplator = "1.4.1"
 mintpermissions = "1.1.2"
@@ -106,6 +107,7 @@ androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-view
 androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
 google-material = { module = "com.google.android.material:material", version.ref = "google-material" }
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
+httpclient = { module = "org.apache.httpcomponents:httpclient", version.ref = "httpclient" }
 media3-datasource-cronet = { module = "androidx.media3:media3-datasource-cronet", version.ref = "media3" }
 media3-datasource-okhttp = { module = "androidx.media3:media3-datasource-okhttp", version.ref = "media3" }
 media3-exoplayer-hls = { module = "androidx.media3:media3-exoplayer-hls", version.ref = "media3" }
