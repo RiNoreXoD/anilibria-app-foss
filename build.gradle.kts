@@ -14,6 +14,7 @@ allprojects {
     configurations.all {
         resolutionStrategy {
             force("org.bouncycastle:bcprov-jdk18on:1.85")
+            force("org.jdom:jdom2:2.0.6.1")
         }
     }
 
