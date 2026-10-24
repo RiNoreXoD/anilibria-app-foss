@@ -52,6 +52,7 @@ mintpermissions = "1.1.2"
 netty = "4.1.137.Final"
 moshi = "1.15.2"
 okhttp = "5.3.2"
+play-services-basement = "18.0.2"
 androidx-palette = "1.0.0"
 androidx-preference = "1.2.1"
 androidx-recyclerview = "1.4.0"
@@ -124,6 +125,7 @@ androidx-preference = { module = "androidx.preference:preference-ktx", version.r
 androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "androidx-recyclerview" }
 androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "androidx-swiperefreshlayout" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
+play-services-basement = { module = "com.google.android.gms:play-services-basement", version.ref = "play-services-basement" }
 viewbindingpropertydelegate = { module = "dev.androidbroadcast.vbpd:vbpd-reflection", version.ref = "viewbindingpropertydelegate" }
 
 [plugins]
