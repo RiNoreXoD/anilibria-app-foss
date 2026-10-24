@@ -29,18 +29,41 @@ class CompatTrustManager(
     }
 
     /*
-     * Delegate to the default trust manager.
+     * Delegate to managers until we find one that accepts the client certificate.
      */
     @Throws(CertificateException::class)
-    override fun checkClientTrusted(chain: Array<X509Certificate>, authType: String) {
-        defaultManager.checkClientTrusted(chain, authType)
+    override fun checkClientTrusted(chain: Array<X509Certificate>?, authType: String?) {
+        if (chain.isNullOrEmpty()) {
+            throw CertificateException("Client certificate chain is null or empty")
+        }
+        if (authType.isNullOrBlank()) {
+            throw CertificateException("Auth type is null or empty")
+        }
+
+        var latestException: CertificateException? = null
+        for (manager in managers) {
+            try {
+                manager.checkClientTrusted(chain, authType)
+                return
+            } catch (e: CertificateException) {
+                latestException = e
+            }
+        }
+        throw CertificateException("Client certificate chain is not trusted by any manager", latestException)
     }
 
     /*
      * Loop over the trustmanagers until we find one that accepts our server
      */
     @Throws(CertificateException::class)
-    override fun checkServerTrusted(chain: Array<X509Certificate>, authType: String) {
+    override fun checkServerTrusted(chain: Array<X509Certificate>?, authType: String?) {
+        if (chain.isNullOrEmpty()) {
+            throw CertificateException("Server certificate chain is null or empty")
+        }
+        if (authType.isNullOrBlank()) {
+            throw CertificateException("Auth type is null or empty")
+        }
+
         var latestException: CertificateException? = null
         for (manager in managers) {
             try {
@@ -50,12 +73,12 @@ class CompatTrustManager(
                 latestException = e
             }
         }
-        throw latestException ?: CertificateException("Not found any trusted server in managers")
+        throw CertificateException("Server certificate chain is not trusted by any manager", latestException)
     }
 
     override fun getAcceptedIssuers(): Array<X509Certificate> {
         val certificates = managers.flatMap {
-            it.acceptedIssuers.toList()
+            it.acceptedIssuers?.toList().orEmpty()
         }
         return certificates.toTypedArray()
     }
