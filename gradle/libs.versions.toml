@@ -45,6 +45,7 @@ materialprogressbar = "1.6.1"
 chucker = "4.3.0"
 androidx-lifecycle = "2.9.4"
 google-material = "1.13.0"
+guava = "32.0.0-android"
 media3 = "1.8.0"
 minitemplator = "1.4.1"
 mintpermissions = "1.1.2"
@@ -102,6 +103,7 @@ androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-lived
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
 google-material = { module = "com.google.android.material:material", version.ref = "google-material" }
+guava = { module = "com.google.guava:guava", version.ref = "guava" }
 media3-datasource-cronet = { module = "androidx.media3:media3-datasource-cronet", version.ref = "media3" }
 media3-datasource-okhttp = { module = "androidx.media3:media3-datasource-okhttp", version.ref = "media3" }
 media3-exoplayer-hls = { module = "androidx.media3:media3-exoplayer-hls", version.ref = "media3" }

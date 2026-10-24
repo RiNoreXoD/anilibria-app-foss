@@ -19,6 +19,7 @@ allprojects {
             force("io.netty:netty-codec-http:4.1.137.Final")
             force("org.bitbucket.b_c:jose4j:0.9.6")
             force("org.apache.commons:commons-lang3:3.18.0")
+            force("com.google.guava:guava:32.0.0-android")
             eachDependency {
                 if (requested.group == "io.netty") {
                     useVersion("4.1.137.Final")
