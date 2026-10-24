@@ -19,6 +19,7 @@ buildscript {
         classpath("org.bitbucket.b_c:jose4j:0.9.6")
         classpath("org.apache.commons:commons-lang3:3.18.0")
         classpath("com.google.guava:guava:32.0.0-android")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.4.20-Beta1")
     }
 }
 
