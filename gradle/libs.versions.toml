@@ -108,6 +108,7 @@ minitemplator = { module = "org.bsc.util:minitemplator-repackaged", version.ref 
 mintpermissions-flows = { module = "com.github.mintrocket.MintPermissions:mintpermissions-flows", version.ref = "mintpermissions" }
 mintpermissions = { module = "com.github.mintrocket.MintPermissions:mintpermissions", version.ref = "mintpermissions" }
 netty-handler = { module = "io.netty:netty-handler", version.ref = "netty" }
+netty-codec-http = { module = "io.netty:netty-codec-http", version.ref = "netty" }
 moshi = { module = "com.squareup.moshi:moshi", version.ref = "moshi" }
 moshi-adapters = { module = "com.squareup.moshi:moshi-adapters", version.ref = "moshi" }
 moshi-compiler = { module = "com.squareup.moshi:moshi-kotlin-codegen", version.ref = "moshi" }

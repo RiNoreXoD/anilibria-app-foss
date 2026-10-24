@@ -16,6 +16,7 @@ allprojects {
             force("org.bouncycastle:bcprov-jdk18on:1.85")
             force("org.jdom:jdom2:2.0.6.1")
             force("io.netty:netty-handler:4.1.137.Final")
+            force("io.netty:netty-codec-http:4.1.137.Final")
             eachDependency {
                 if (requested.group == "io.netty") {
                     useVersion("4.1.137.Final")
