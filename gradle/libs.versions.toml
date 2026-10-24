@@ -19,6 +19,7 @@ adapterdelegates = "4.3.2"
 androidnetworktools = "0.4.5.3"
 androidx-appcompat = "1.7.1"
 androidx-cardview = "1.0.0"
+bcprov-jdk18on = "1.85"
 cicerone = "7.1"
 coil = "3.3.0"
 androidx-collection = "1.5.0"
@@ -62,6 +63,7 @@ adapterdelegates = { module = "com.hannesdorfmann:adapterdelegates4", version.re
 androidnetworktools = { module = "com.github.stealthcopter:AndroidNetworkTools", version.ref = "androidnetworktools" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
 androidx-cardview = { module = "androidx.cardview:cardview", version.ref = "androidx-cardview" }
+bcprov-jdk18on = { module = "org.bouncycastle:bcprov-jdk18on", version.ref = "bcprov-jdk18on" }
 chucker = { module = "com.github.chuckerteam.chucker:library", version.ref = "chucker" }
 cicerone = { module = "com.github.terrakok:cicerone", version.ref = "cicerone" }
 coil = { module = "io.coil-kt.coil3:coil", version.ref = "coil" }

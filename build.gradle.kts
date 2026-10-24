@@ -11,6 +11,12 @@ tasks.register<Delete>("clean") {
 }
 
 allprojects {
+    configurations.all {
+        resolutionStrategy {
+            force("org.bouncycastle:bcprov-jdk18on:1.85")
+        }
+    }
+
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         compilerOptions{
             freeCompilerArgs.add("-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi")

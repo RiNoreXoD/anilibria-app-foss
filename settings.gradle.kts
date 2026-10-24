@@ -6,6 +6,16 @@ pluginManagement {
     }
 }
 
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.bouncycastle:bcprov-jdk18on:1.85")
+    }
+}
+
 dependencyResolutionManagement {
     repositories {
         google()
