@@ -17,6 +17,7 @@ buildscript {
         classpath("io.netty:netty-handler:4.1.137.Final")
         classpath("io.netty:netty-codec-http:4.1.137.Final")
         classpath("org.bitbucket.b_c:jose4j:0.9.6")
+        classpath("org.apache.commons:commons-lang3:3.18.0")
     }
 }
 

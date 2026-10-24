@@ -22,6 +22,7 @@ androidx-cardview = "1.0.0"
 bcprov-jdk18on = "1.85"
 cicerone = "7.1"
 coil = "3.3.0"
+commons-lang3 = "3.18.0"
 androidx-collection = "1.5.0"
 conscrypt-android = "2.5.3"
 androidx-core = "1.17.0"
@@ -71,6 +72,7 @@ chucker = { module = "com.github.chuckerteam.chucker:library", version.ref = "ch
 cicerone = { module = "com.github.terrakok:cicerone", version.ref = "cicerone" }
 coil = { module = "io.coil-kt.coil3:coil", version.ref = "coil" }
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
+commons-lang3 = { module = "org.apache.commons:commons-lang3", version.ref = "commons-lang3" }
 androidx-collection-ktx = { module = "androidx.collection:collection-ktx", version.ref = "androidx-collection" }
 conscrypt-android = { module = "org.conscrypt:conscrypt-android", version.ref = "conscrypt-android" }
 androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "androidx-constraintlayout" }

@@ -18,6 +18,7 @@ allprojects {
             force("io.netty:netty-handler:4.1.137.Final")
             force("io.netty:netty-codec-http:4.1.137.Final")
             force("org.bitbucket.b_c:jose4j:0.9.6")
+            force("org.apache.commons:commons-lang3:3.18.0")
             eachDependency {
                 if (requested.group == "io.netty") {
                     useVersion("4.1.137.Final")
