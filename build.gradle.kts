@@ -17,6 +17,7 @@ allprojects {
             force("org.jdom:jdom2:2.0.6.1")
             force("io.netty:netty-handler:4.1.137.Final")
             force("io.netty:netty-codec-http:4.1.137.Final")
+            force("org.bitbucket.b_c:jose4j:0.9.6")
             eachDependency {
                 if (requested.group == "io.netty") {
                     useVersion("4.1.137.Final")
