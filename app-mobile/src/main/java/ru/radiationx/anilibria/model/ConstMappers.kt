@@ -8,7 +8,6 @@ import ru.radiationx.data.entity.domain.other.DataIcons
 
 @DrawableRes
 fun String.asDataIconRes(): Int? = when (this) {
-    DataIcons.VK -> R.drawable.ic_logo_vk
     DataIcons.YOUTUBE,
     DataIcons.YOUTUBE1,
     -> R.drawable.ic_logo_youtube
@@ -27,7 +26,6 @@ fun String.asDataIconRes(): Int? = when (this) {
 
 @ColorRes
 fun String.asDataColorRes(): Int? = when (this) {
-    DataColor.VK -> R.color.brand_vk
     DataColor.YOUTUBE,
     DataColor.YOUTUBE1,
     -> R.color.brand_youtube

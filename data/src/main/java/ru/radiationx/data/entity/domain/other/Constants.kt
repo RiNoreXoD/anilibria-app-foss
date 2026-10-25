@@ -1,7 +1,6 @@
 package ru.radiationx.data.entity.domain.other
 
 object DataIcons {
-    const val VK = "vk"
     const val YOUTUBE = "youtube"
     const val YOUTUBE1 = "yotube"
     const val PATREON = "patreon"
@@ -16,7 +15,6 @@ object DataIcons {
 }
 
 object DataColor {
-    const val VK = "vk"
     const val YOUTUBE = "youtube"
     const val YOUTUBE1 = "yotube"
     const val PATREON = "patreon"

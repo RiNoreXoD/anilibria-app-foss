@@ -35,7 +35,6 @@ class ReleaseViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val router: Router,
     private val errorHandler: IErrorHandler,
-    commentsNotifier: ReleaseCommentsNotifier,
 ) : ViewModel() {
 
     private var currentData: Release? = null
@@ -46,7 +45,6 @@ class ReleaseViewModel @Inject constructor(
     val shareAction = EventFlow<String>()
     val copyAction = EventFlow<String>()
     val shortcutAction = EventFlow<Release>()
-    val openCommentsAction = commentsNotifier.observe()
 
     init {
         argExtra.release?.also {
@@ -128,11 +126,6 @@ class ReleaseViewModel @Inject constructor(
     fun onShortcutAddClick() {
         currentData?.let {
             shortcutAction.set(it)
-        }
-    }
-
-    fun onCommentsSwipe() {
-        currentData?.also {
         }
     }
 

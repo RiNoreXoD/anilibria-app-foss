@@ -3,7 +3,6 @@ package ru.radiationx.anilibria.ui.fragments.release.details
 /* Created by radiationx on 18.11.17. */
 
 import ru.radiationx.anilibria.R
-import ru.radiationx.anilibria.ui.adapters.CommentRouteListItem
 import ru.radiationx.anilibria.ui.adapters.DividerShadowListItem
 import ru.radiationx.anilibria.ui.adapters.FeedSectionListItem
 import ru.radiationx.anilibria.ui.adapters.ListItem
@@ -16,7 +15,6 @@ import ru.radiationx.anilibria.ui.adapters.ReleaseRemindListItem
 import ru.radiationx.anilibria.ui.adapters.ReleaseTorrentListItem
 import ru.radiationx.anilibria.ui.adapters.ShadowDirection
 import ru.radiationx.anilibria.ui.adapters.feed.FeedSectionDelegate
-import ru.radiationx.anilibria.ui.adapters.global.CommentRouteDelegate
 import ru.radiationx.anilibria.ui.adapters.other.DividerShadowItemDelegate
 import ru.radiationx.anilibria.ui.adapters.release.detail.EpisodeControlPlace
 import ru.radiationx.anilibria.ui.adapters.release.detail.ReleaseBlockedDelegate
@@ -36,7 +34,6 @@ class ReleaseInfoAdapter(
     episodeControlListener: ReleaseEpisodeControlDelegate.Listener,
     torrentClickListener: (TorrentId) -> Unit,
     torrentCancelClickListener: (TorrentId) -> Unit,
-    commentsClickListener: () -> Unit,
     episodesTabListener: (String) -> Unit,
     remindCloseListener: () -> Unit,
     private val torrentInfoListener: () -> Unit,
@@ -60,7 +57,6 @@ class ReleaseInfoAdapter(
         addDelegate(ReleaseEpisodesHeadDelegate(episodesTabListener))
         addDelegate(ReleaseRemindDelegate(remindCloseListener))
         addDelegate(ReleaseBlockedDelegate())
-        addDelegate(CommentRouteDelegate(commentsClickListener))
         addDelegate(DividerShadowItemDelegate())
 
     }
@@ -160,9 +156,6 @@ class ReleaseInfoAdapter(
             }
             newItems.add(DividerShadowListItem(ShadowDirection.Double, "episodes"))
         }
-
-        newItems.add(CommentRouteListItem("comments"))
-        newItems.add(DividerShadowListItem(ShadowDirection.Bottom, "comments"))
 
         items = newItems
     }

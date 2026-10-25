@@ -59,7 +59,6 @@ enum class ShadowDirection {
 
 data class LoadMoreListItem(val id: Any, val needNotify: Boolean) : ListItem(id)
 data class LoadErrorListItem(val id: Any) : ListItem(id)
-data class CommentRouteListItem(val id: Any) : ListItem(id)
 data class BottomTabListItem(
     val item: MainActivity.Tab,
     val selected: Boolean,

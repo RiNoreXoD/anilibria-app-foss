@@ -16,7 +16,6 @@ import ru.radiationx.anilibria.presentation.common.ILinkHandler
 import ru.radiationx.anilibria.ui.common.ErrorHandler
 import ru.radiationx.anilibria.ui.common.LinkRouter
 import ru.radiationx.anilibria.ui.common.Templates
-import ru.radiationx.anilibria.ui.fragments.comments.VkCommentsCss
 import ru.radiationx.anilibria.utils.ShortcutHelper
 import ru.radiationx.anilibria.utils.messages.SystemMessenger
 import ru.radiationx.data.SharedBuildConfig
@@ -54,7 +53,6 @@ class AppModule(application: Application) : QuillModule() {
 
 
         single<Templates>()
-        single<VkCommentsCss>()
         singleImpl<AppThemeController, AppThemeControllerImpl>()
 
         val ciceroneHolder by lazy { CiceroneHolder() }

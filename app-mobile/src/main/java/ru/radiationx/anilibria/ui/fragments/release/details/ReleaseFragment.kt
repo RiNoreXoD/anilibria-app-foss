@@ -12,7 +12,6 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,7 +27,6 @@ import ru.radiationx.anilibria.ui.common.BackButtonListener
 import ru.radiationx.anilibria.ui.fragments.BaseToolbarFragment
 import ru.radiationx.anilibria.ui.fragments.SharedReceiver
 import ru.radiationx.anilibria.ui.fragments.TopScroller
-import ru.radiationx.anilibria.ui.fragments.comments.LazyVkCommentsFragment
 import ru.radiationx.anilibria.ui.widgets.ScrimHelper
 import ru.radiationx.anilibria.utils.ShortcutHelper
 import ru.radiationx.anilibria.utils.ToolbarHelper
@@ -36,7 +34,6 @@ import ru.radiationx.data.entity.domain.release.Release
 import ru.radiationx.data.entity.domain.types.ReleaseCode
 import ru.radiationx.data.entity.domain.types.ReleaseId
 import ru.radiationx.quill.inject
-import ru.radiationx.quill.installModules
 import ru.radiationx.quill.viewModel
 import ru.radiationx.shared.ktx.android.getExtra
 import ru.radiationx.shared.ktx.android.launchInResumed
@@ -53,9 +50,6 @@ open class ReleaseFragment : BaseToolbarFragment<FragmentPagedBinding>(R.layout.
         private const val ARG_ID: String = "release_id"
         private const val ARG_ID_CODE: String = "release_id_code"
         private const val ARG_ITEM: String = "release_item"
-
-        private const val PAGE_INFO = 0
-        private const val PAGE_COMMENTS = 1
 
         fun newInstance(
             id: ReleaseId? = null,
@@ -99,7 +93,6 @@ open class ReleaseFragment : BaseToolbarFragment<FragmentPagedBinding>(R.layout.
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        installModules(ReleaseModule())
         super.onCreate(savedInstanceState)
     }
 
@@ -192,16 +185,6 @@ open class ReleaseFragment : BaseToolbarFragment<FragmentPagedBinding>(R.layout.
             }
             .launchIn(viewLifecycleOwner.lifecycleScope)
 
-        binding.viewPagerPaged.addOnPageChangeListener(object :
-            ViewPager.SimpleOnPageChangeListener() {
-            override fun onPageSelected(position: Int) {
-                if (position == PAGE_COMMENTS) {
-                    baseBinding.appbarLayout.setExpanded(false)
-                    viewModel.onCommentsSwipe()
-                }
-            }
-        })
-
         binding.viewPagerPaged.adapter = pagerAdapter
 
         viewModel.state.onEach {
@@ -221,10 +204,6 @@ open class ReleaseFragment : BaseToolbarFragment<FragmentPagedBinding>(R.layout.
             shortcutHelper.addShortcut(it)
         }.launchInResumed(viewLifecycleOwner)
 
-        viewModel.openCommentsAction.onEach {
-            binding.viewPagerPaged.currentItem = PAGE_COMMENTS
-        }.launchInResumed(viewLifecycleOwner)
-
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
@@ -234,13 +213,7 @@ open class ReleaseFragment : BaseToolbarFragment<FragmentPagedBinding>(R.layout.
         }
     }
 
-    override fun onBackPressed(): Boolean {
-        if (binding.viewPagerPaged.currentItem != PAGE_INFO) {
-            binding.viewPagerPaged.currentItem = PAGE_INFO
-            return true
-        }
-        return false
-    }
+    override fun onBackPressed(): Boolean = false
 
     private fun showState(state: ReleasePagerState) {
         if (state.poster == null) {
@@ -303,8 +276,7 @@ open class ReleaseFragment : BaseToolbarFragment<FragmentPagedBinding>(R.layout.
         ) {
 
         private val fragments = listOf<Fragment>(
-            ReleaseInfoFragment(),
-            LazyVkCommentsFragment()
+            ReleaseInfoFragment()
         )
 
         override fun getItem(position: Int): Fragment = fragments[position]

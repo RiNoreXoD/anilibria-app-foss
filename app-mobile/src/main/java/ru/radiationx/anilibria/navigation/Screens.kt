@@ -16,7 +16,6 @@ import ru.radiationx.anilibria.ui.fragments.TabFragment
 import ru.radiationx.anilibria.ui.fragments.auth.main.Auth2FaCodeFragment
 import ru.radiationx.anilibria.ui.fragments.auth.main.AuthFragment
 import ru.radiationx.anilibria.ui.fragments.auth.social.AuthSocialFragment
-import ru.radiationx.anilibria.ui.fragments.auth.vk.AuthVkFragment
 import ru.radiationx.anilibria.ui.fragments.favorites.FavoritesFragment
 import ru.radiationx.anilibria.ui.fragments.feed.FeedFragment
 import ru.radiationx.anilibria.ui.fragments.history.HistoryFragment
@@ -97,10 +96,6 @@ object Screens {
     ) : BaseFragmentScreen() {
         override fun createFragment(factory: FragmentFactory) =
             Auth2FaCodeFragment.newInstance(login, password)
-    }
-
-    class AuthVk(val url: String) : BaseFragmentScreen() {
-        override fun createFragment(factory: FragmentFactory) = AuthVkFragment.newInstance(url)
     }
 
     class AuthSocial(val key: String) : BaseFragmentScreen() {

@@ -79,7 +79,7 @@ class WebPlayerActivity : BaseActivity(R.layout.activity_moon) {
         val webViewClient = object : WebViewClientCompat() {
 
             private val urlRegex =
-                Regex("https?:\\/\\/(?:vk\\.com\\/video_ext|streamguard\\.cc|kodik\\.info)")
+                Regex("https?:\\/\\/(?:streamguard\\.cc|kodik\\.info)")
 
             override fun shouldOverrideUrlLoading(
                 view: WebView,

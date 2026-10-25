@@ -4,8 +4,6 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.withContext
 import ru.radiationx.data.DataPreferences
 import ru.radiationx.data.datasource.SuspendMutableStateFlow
@@ -25,16 +23,8 @@ class AuthStorage @Inject constructor(
         private const val KEY_AUTH_SKIPPED = "auth_skipped"
     }
 
-    private val vkAuthRelay = MutableSharedFlow<Boolean>()
-
     private val authSkippedState = SuspendMutableStateFlow {
         loadAuthSkipped()
-    }
-
-    override fun observeVkAuthChange(): Flow<Boolean> = vkAuthRelay.asSharedFlow()
-
-    override suspend fun changeVkAuth(value: Boolean) {
-        vkAuthRelay.emit(value)
     }
 
     override suspend fun getDeviceId(): String {

@@ -54,7 +54,6 @@ class ReleaseInfoViewModel @Inject constructor(
     private val errorHandler: IErrorHandler,
     private val systemUtils: SystemUtils,
     private val appPreferences: PreferencesHolder,
-    private val commentsNotifier: ReleaseCommentsNotifier,
     private val remoteFileRepository: RemoteFileRepository,
 ) : ViewModel() {
 
@@ -211,12 +210,6 @@ class ReleaseInfoViewModel @Inject constructor(
                 it.minus(item.id)
             }
         }
-    }
-
-    fun onCommentsClick() {
-        currentData?.also {
-        }
-        commentsNotifier.requireOpen()
     }
 
     fun onClickWatchWeb() {
