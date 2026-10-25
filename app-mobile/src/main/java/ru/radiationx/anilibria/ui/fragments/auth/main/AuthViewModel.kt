@@ -52,7 +52,7 @@ class AuthViewModel @Inject constructor(
         authRepository
             .observeSocialAuth()
             .onEach { socialAuth ->
-                val items = socialAuth.map { it.toState() }
+                val items = socialAuth.filter { !it.key.equals("vk", ignoreCase = true) }.map { it.toState() }
                 _state.update { it.copy(socialItems = items) }
             }
             .launchIn(viewModelScope)

@@ -41,15 +41,18 @@ class SocialAuthStorage @Inject constructor(
                 val itemsJson = JSONArray(it)
                 for (j in 0 until itemsJson.length()) {
                     val jsonItem = itemsJson.getJSONObject(j)
-                    resultItems.add(
-                        SocialAuth(
-                            jsonItem.getString("key"),
-                            jsonItem.getString("title"),
-                            jsonItem.getString("socialUrl"),
-                            jsonItem.getString("resultPattern"),
-                            jsonItem.getString("errorUrlPattern")
+                    val key = jsonItem.getString("key")
+                    if (!key.equals("vk", ignoreCase = true)) {
+                        resultItems.add(
+                            SocialAuth(
+                                key,
+                                jsonItem.getString("title"),
+                                jsonItem.getString("socialUrl"),
+                                jsonItem.getString("resultPattern"),
+                                jsonItem.getString("errorUrlPattern")
+                            )
                         )
-                    )
+                    }
                 }
             }
             resultItems
@@ -59,7 +62,7 @@ class SocialAuthStorage @Inject constructor(
     private suspend fun saveData(items: List<SocialAuth>) {
         withContext(Dispatchers.IO) {
             val resultJson = JSONArray()
-            items.forEach { item ->
+            items.filter { !it.key.equals("vk", ignoreCase = true) }.forEach { item ->
                 resultJson.put(JSONObject().apply {
                     put("key", item.key)
                     put("title", item.title)

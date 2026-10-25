@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import okhttp3.Cookie
 import ru.radiationx.data.datasource.holders.AuthHolder
@@ -117,12 +118,14 @@ class AuthRepository @Inject constructor(
 
     fun observeSocialAuth(): Flow<List<SocialAuth>> = socialAuthHolder
         .observe()
+        .map { items -> items.filter { !it.key.equals("vk", ignoreCase = true) } }
         .flowOn(Dispatchers.IO)
 
     suspend fun loadSocialAuth(): List<SocialAuth> = withContext(Dispatchers.IO) {
         authApi
             .loadSocialAuth()
             .map { it.toDomain() }
+            .filter { !it.key.equals("vk", ignoreCase = true) }
             .also { socialAuthHolder.save(it) }
     }
 
