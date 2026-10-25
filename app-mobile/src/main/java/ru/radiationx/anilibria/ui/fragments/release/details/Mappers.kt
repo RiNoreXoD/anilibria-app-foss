@@ -86,11 +86,8 @@ private fun Members.toInfo(): List<String> {
 
 private fun List<String>.asMemberRole(title: String): String? {
     if (isEmpty()) return null
-    val links = joinToString(", ") {
-        val value = it.htmlEncode()
-        "<a href=\"${ReleaseInfoState.TAG_VOICE}_$value\">${value}</a>"
-    }
-    return "<b>$title:</b> $links"
+    val names = joinToString(", ") { it.htmlEncode() }
+    return "<b>$title:</b> $names"
 }
 
 fun BlockedInfo.toState(): ReleaseBlockedInfoState {

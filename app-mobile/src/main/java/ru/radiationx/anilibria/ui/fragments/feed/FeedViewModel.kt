@@ -20,7 +20,6 @@ import kotlinx.coroutines.supervisorScope
 import ru.mintrocket.lib.mintpermissions.MintPermissionsController
 import ru.mintrocket.lib.mintpermissions.ext.isGranted
 import ru.mintrocket.lib.mintpermissions.flows.MintPermissionsDialogFlow
-import ru.radiationx.anilibria.model.DonationCardItemState
 import ru.radiationx.anilibria.model.ReleaseItemState
 import ru.radiationx.anilibria.model.ScheduleItemState
 import ru.radiationx.anilibria.model.toState
@@ -36,7 +35,6 @@ import ru.radiationx.data.entity.domain.release.ReleaseUpdate
 import ru.radiationx.data.entity.domain.types.ReleaseId
 import ru.radiationx.data.interactors.ReleaseInteractor
 import ru.radiationx.data.repository.CheckerRepository
-import ru.radiationx.data.repository.DonationRepository
 import ru.radiationx.data.repository.FeedRepository
 import ru.radiationx.data.repository.ScheduleRepository
 import ru.radiationx.shared.ktx.asDayNameDeclension
@@ -66,7 +64,6 @@ class FeedViewModel @Inject constructor(
     checkerRepository: CheckerRepository,
     releaseUpdateHolder: ReleaseUpdateHolder,
     private val appPreferences: PreferencesHolder,
-    private val donationRepository: DonationRepository,
     private val router: Router,
     private val errorHandler: IErrorHandler,
     private val shortcutHelper: ShortcutHelper,
@@ -74,10 +71,6 @@ class FeedViewModel @Inject constructor(
     permissionsController: MintPermissionsController,
     private val permissionsDialogFlow: MintPermissionsDialogFlow,
 ) : ViewModel() {
-
-    companion object {
-        private const val DONATION_NEW_TAG = "donation_new"
-    }
 
     private val appUpdateWarning = FeedAppWarning(
         "update",
@@ -134,32 +127,6 @@ class FeedViewModel @Inject constructor(
                 it.copy(warnings = warnings.values.toList())
             }
         }.launchIn(viewModelScope)
-
-        appPreferences
-            .newDonationRemind
-            .flatMapLatest { enabled ->
-                donationRepository.observerDonationInfo().map {
-                    Pair(it.cardNewDonations, enabled)
-                }
-            }
-            .onEach { pair ->
-                val newDonationState = if (pair.second) {
-                    pair.first?.let {
-                        DonationCardItemState(
-                            tag = DONATION_NEW_TAG,
-                            title = it.title,
-                            subtitle = it.subtitle,
-                            canClose = false
-                        )
-                    }
-                } else {
-                    null
-                }
-                _state.update {
-                    it.copy(donationCardItemState = newDonationState)
-                }
-            }
-            .launchIn(viewModelScope)
 
         combine(
             pageLoader.observeState(),
@@ -246,23 +213,6 @@ class FeedViewModel @Inject constructor(
             }
         }
         warningsController.close(warning.tag)
-    }
-
-    fun onDonationClick(state: DonationCardItemState) {
-        when (state.tag) {
-            DONATION_NEW_TAG -> {
-                appPreferences.newDonationRemind.value = false
-            }
-        }
-        router.navigateTo(Screens.DonationDetail())
-    }
-
-    fun onDonationCloseClick(state: DonationCardItemState) {
-        when (state.tag) {
-            DONATION_NEW_TAG -> {
-                appPreferences.newDonationRemind.value = false
-            }
-        }
     }
 
     fun onCopyClick(item: ReleaseItemState) {

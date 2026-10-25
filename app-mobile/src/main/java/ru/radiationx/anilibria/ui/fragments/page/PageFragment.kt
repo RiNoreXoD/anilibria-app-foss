@@ -90,11 +90,7 @@ class PageFragment : BaseToolbarFragment<FragmentWebviewBinding>(R.layout.fragme
         ToolbarHelper.marqueeTitle(baseBinding.toolbar)
 
         baseBinding.toolbar.apply {
-            title = when (argPath) {
-                PageApi.PAGE_PATH_TEAM -> "Команда проекта"
-                PageApi.PAGE_PATH_DONATE -> "Поддержать"
-                else -> pageTitle ?: "Статическая страница"
-            }
+            title = pageTitle ?: "Статическая страница"
             setNavigationOnClickListener { viewModel.onBackPressed() }
             setNavigationIcon(R.drawable.ic_toolbar_arrow_back)
         }

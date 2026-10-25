@@ -38,10 +38,6 @@
         <item name="bg_fav_btn">@drawable/bg_btn_favorite_dark</item>
         <item name="bg_release_remind">@drawable/bg_release_remind_dark</item>
         <item name="bg_schedule_day">@drawable/bg_schedule_day_dark</item>
-        <item name="bgDonationIconPt">@drawable/bg_donation_icon_pt_dark</item>
-        <item name="bgDonationIconBt">@drawable/bg_donation_icon_bt_dark</item>
-        <item name="bgDonationIconYm">@drawable/bg_donation_icon_ym_dark</item>
-        <item name="bgDonationIconDa">@drawable/bg_donation_icon_da_dark</item>
 
         <item name="textDefault">@color/dark_textDefault</item>
         <item name="textSecond">@color/dark_textSecond</item>

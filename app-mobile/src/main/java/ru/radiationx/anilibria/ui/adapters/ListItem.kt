@@ -1,6 +1,5 @@
 package ru.radiationx.anilibria.ui.adapters
 
-import ru.radiationx.anilibria.model.DonationCardItemState
 import ru.radiationx.anilibria.model.FeedItemState
 import ru.radiationx.anilibria.model.ReleaseItemState
 import ru.radiationx.anilibria.model.ScheduleItemState
@@ -97,7 +96,6 @@ data class ReleaseEpisodesHeadListItem(
     val selectedTag: String?,
 ) : ListItem(id)
 
-data class ReleaseDonateListItem(val state: DonationCardItemState) : ListItem(state.tag)
 data class ReleaseRemindListItem(val text: String) : ListItem(text)
 data class ReleaseBlockedListItem(val state: ReleaseBlockedInfoState) : ListItem(state.title)
 data class ReleaseHeadListItem(
@@ -132,7 +130,6 @@ data class FeedListItem(val item: FeedItemState) :
 data class FeedRandomBtnListItem(val id: Any) : ListItem(id)
 data class AppInfoCardListItem(val warning: FeedAppWarning) : ListItem(warning.tag)
 data class AppWarningCardListItem(val warning: FeedAppWarning) : ListItem(warning.tag)
-data class DonationCardListItem(val state: DonationCardItemState) : ListItem(state.tag)
 
 
 /* Player */

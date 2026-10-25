@@ -1,13 +1,11 @@
 package ru.radiationx.anilibria.ui.fragments.feed
 
 import android.view.View
-import ru.radiationx.anilibria.model.DonationCardItemState
 import ru.radiationx.anilibria.model.ReleaseItemState
 import ru.radiationx.anilibria.model.ScheduleItemState
 import ru.radiationx.anilibria.ui.adapters.AppInfoCardListItem
 import ru.radiationx.anilibria.ui.adapters.AppWarningCardListItem
 import ru.radiationx.anilibria.ui.adapters.DividerShadowListItem
-import ru.radiationx.anilibria.ui.adapters.DonationCardListItem
 import ru.radiationx.anilibria.ui.adapters.FeedListItem
 import ru.radiationx.anilibria.ui.adapters.FeedRandomBtnListItem
 import ru.radiationx.anilibria.ui.adapters.FeedSchedulesListItem
@@ -20,7 +18,6 @@ import ru.radiationx.anilibria.ui.adapters.PlaceholderListItem
 import ru.radiationx.anilibria.ui.adapters.ShadowDirection
 import ru.radiationx.anilibria.ui.adapters.feed.AppInfoCardDelegate
 import ru.radiationx.anilibria.ui.adapters.feed.AppWarningCardDelegate
-import ru.radiationx.anilibria.ui.adapters.feed.DonationCardDelegate
 import ru.radiationx.anilibria.ui.adapters.feed.FeedRandomBtnDelegate
 import ru.radiationx.anilibria.ui.adapters.feed.FeedReleaseDelegate
 import ru.radiationx.anilibria.ui.adapters.feed.FeedSchedulesDelegate
@@ -38,8 +35,6 @@ class FeedAdapter(
     loadRetryListener: () -> Unit,
     warningClickListener: (FeedAppWarning) -> Unit,
     warningClickCloseListener: (FeedAppWarning) -> Unit,
-    donationListener: (DonationCardItemState) -> Unit,
-    donationCloseListener: (DonationCardItemState) -> Unit,
     schedulesClickListener: () -> Unit,
     scheduleScrollListener: (Int) -> Unit,
     randomClickListener: () -> Unit,
@@ -64,7 +59,6 @@ class FeedAdapter(
     init {
         addDelegate(AppInfoCardDelegate(warningClickListener, warningClickCloseListener))
         addDelegate(AppWarningCardDelegate(warningClickListener, warningClickCloseListener))
-        addDelegate(DonationCardDelegate(donationListener, donationCloseListener))
         addDelegate(LoadMoreDelegate(loadMoreListener))
         addDelegate(LoadErrorDelegate(loadRetryListener))
         addDelegate(FeedSectionDelegate(sectionClickListener))
@@ -109,10 +103,6 @@ class FeedAdapter(
                 )
             )
             newItems.add(FeedSchedulesListItem("actual", scheduleState.items))
-        }
-
-        if (state.donationCardItemState != null && state.data.data != null) {
-            newItems.add(DonationCardListItem(state.donationCardItemState))
         }
 
         val feedItems = loadingState.data?.feedItems.orEmpty()

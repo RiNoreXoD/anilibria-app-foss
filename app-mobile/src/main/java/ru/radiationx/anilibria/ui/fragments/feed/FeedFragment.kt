@@ -44,10 +44,6 @@ class FeedFragment :
             viewModel.appWarningClick(it)
         }, warningClickCloseListener = {
             viewModel.appWarningCloseClick(it)
-        }, donationListener = {
-            viewModel.onDonationClick(it)
-        }, donationCloseListener = {
-            viewModel.onDonationCloseClick(it)
         }, schedulesClickListener = {
             viewModel.onSchedulesClick()
         }, scheduleScrollListener = { position ->

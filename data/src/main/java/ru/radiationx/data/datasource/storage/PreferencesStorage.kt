@@ -21,7 +21,6 @@ class PreferencesStorage @Inject constructor(
 ) : PreferencesHolder {
 
     companion object {
-        private const val NEW_DONATION_REMIND_KEY = "new_donation_remind_access"
         private const val RELEASE_REMIND_KEY = "release_remind"
         private const val SEARCH_REMIND_KEY = "search_remind"
         private const val EPISODES_IS_REVERSE_KEY = "episodes_is_reverse"
@@ -34,26 +33,10 @@ class PreferencesStorage @Inject constructor(
         private const val PLAYER_AUTO_PLAY_KEY = "player_auto_play"
         private const val NOTIFICATIONS_ALL_KEY = "notifications.all"
         private const val NOTIFICATIONS_SERVICE_KEY = "notifications.service"
-
-        private val DONATION_THRESHOLD = TimeUnit.DAYS.toMillis(7)
     }
 
     private val speeds = listOf(0.25f, 0.5f, 0.75f, 1.0f, 1.25f, 1.5f, 1.75f, 2.0f)
     private val speedsState = MutableStateFlow(speeds)
-
-    override val newDonationRemind: AppPreference<Boolean> = AppPreference(
-        key = NEW_DONATION_REMIND_KEY,
-        sharedPreferences = sharedPreferences,
-        get = { key ->
-            val accessDate = getLong(key, 0L)
-            val diff = System.currentTimeMillis() - accessDate
-            diff > DONATION_THRESHOLD
-        },
-        set = { key, value ->
-            val accessDate = if (value) 0L else System.currentTimeMillis()
-            putLong(key, accessDate)
-        }
-    )
 
     override val releaseRemind: AppPreference<Boolean> = AppPreference(
         key = RELEASE_REMIND_KEY,

@@ -19,11 +19,6 @@ class PageApi @Inject constructor(
     private val apiConfig: ApiConfig,
     private val moshi: Moshi
 ) {
-    companion object {
-        const val PAGE_PATH_TEAM = "pages/team.php"
-        const val PAGE_PATH_DONATE = "pages/donate.php"
-
-    }
 
     suspend fun getPage(pagePath: String): PageLibria {
         val args: Map<String, String> = emptyMap()

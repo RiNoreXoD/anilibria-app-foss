@@ -17,7 +17,6 @@ import ru.radiationx.data.R
 import ru.radiationx.data.SimpleClient
 import ru.radiationx.data.datasource.holders.AuthHolder
 import ru.radiationx.data.datasource.holders.CookieHolder
-import ru.radiationx.data.datasource.holders.DonationHolder
 import ru.radiationx.data.datasource.holders.DownloadsHolder
 import ru.radiationx.data.datasource.holders.EpisodesCheckerHolder
 import ru.radiationx.data.datasource.holders.GenresHolder
@@ -26,7 +25,6 @@ import ru.radiationx.data.datasource.holders.MenuHolder
 import ru.radiationx.data.datasource.holders.PreferencesHolder
 import ru.radiationx.data.datasource.holders.ReleaseUpdateHolder
 import ru.radiationx.data.datasource.holders.SocialAuthHolder
-import ru.radiationx.data.datasource.holders.TeamsHolder
 import ru.radiationx.data.datasource.holders.UserHolder
 import ru.radiationx.data.datasource.holders.YearsHolder
 import ru.radiationx.data.datasource.remote.IApiUtils
@@ -36,22 +34,18 @@ import ru.radiationx.data.datasource.remote.address.ApiConfigChanger
 import ru.radiationx.data.datasource.remote.api.AuthApi
 import ru.radiationx.data.datasource.remote.api.CheckerApi
 import ru.radiationx.data.datasource.remote.api.ConfigurationApi
-import ru.radiationx.data.datasource.remote.api.DonationApi
 import ru.radiationx.data.datasource.remote.api.FavoriteApi
 import ru.radiationx.data.datasource.remote.api.FeedApi
-import ru.radiationx.data.datasource.remote.api.MenuApi
 import ru.radiationx.data.datasource.remote.api.PageApi
 import ru.radiationx.data.datasource.remote.api.ReleaseApi
 import ru.radiationx.data.datasource.remote.api.ScheduleApi
 import ru.radiationx.data.datasource.remote.api.SearchApi
-import ru.radiationx.data.datasource.remote.api.TeamsApi
 import ru.radiationx.data.datasource.remote.interceptors.UnauthorizedInterceptor
 import ru.radiationx.data.datasource.remote.parsers.AuthParser
 import ru.radiationx.data.datasource.remote.parsers.PagesParser
 import ru.radiationx.data.datasource.storage.ApiConfigStorage
 import ru.radiationx.data.datasource.storage.AuthStorage
 import ru.radiationx.data.datasource.storage.CookiesStorage
-import ru.radiationx.data.datasource.storage.DonationStorage
 import ru.radiationx.data.datasource.storage.DownloadsStorage
 import ru.radiationx.data.datasource.storage.EpisodesCheckerStorage
 import ru.radiationx.data.datasource.storage.GenresStorage
@@ -60,7 +54,6 @@ import ru.radiationx.data.datasource.storage.MenuStorage
 import ru.radiationx.data.datasource.storage.PreferencesStorage
 import ru.radiationx.data.datasource.storage.ReleaseUpdateStorage
 import ru.radiationx.data.datasource.storage.SocialAuthStorage
-import ru.radiationx.data.datasource.storage.TeamsStorage
 import ru.radiationx.data.datasource.storage.UserStorage
 import ru.radiationx.data.datasource.storage.YearsStorage
 import ru.radiationx.data.di.providers.ApiClientWrapper
@@ -86,7 +79,6 @@ import ru.radiationx.data.player.PlayerDataSourceProvider
 import ru.radiationx.data.repository.AuthRepository
 import ru.radiationx.data.repository.CheckerRepository
 import ru.radiationx.data.repository.ConfigurationRepository
-import ru.radiationx.data.repository.DonationRepository
 import ru.radiationx.data.repository.FavoriteRepository
 import ru.radiationx.data.repository.FeedRepository
 import ru.radiationx.data.repository.HistoryRepository
@@ -95,7 +87,6 @@ import ru.radiationx.data.repository.PageRepository
 import ru.radiationx.data.repository.ReleaseRepository
 import ru.radiationx.data.repository.ScheduleRepository
 import ru.radiationx.data.repository.SearchRepository
-import ru.radiationx.data.repository.TeamsRepository
 import ru.radiationx.data.sslcompat.SslCompat
 import ru.radiationx.data.system.ApiUtils
 import ru.radiationx.data.system.AppCookieJar
@@ -146,8 +137,6 @@ class DataModule(context: Context) : QuillModule() {
         singleImpl<SocialAuthHolder, SocialAuthStorage>()
         singleImpl<MenuHolder, MenuStorage>()
         singleImpl<DownloadsHolder, DownloadsStorage>()
-        singleImpl<DonationHolder, DonationStorage>()
-        singleImpl<TeamsHolder, TeamsStorage>()
         singleImpl<RemoteFileHolder, RemoteFileStorage>()
 
         singleImpl<CookieHolder, CookiesStorage>()
@@ -190,9 +179,6 @@ class DataModule(context: Context) : QuillModule() {
         single<PageApi>()
         single<ScheduleApi>()
         single<FeedApi>()
-        single<MenuApi>()
-        single<DonationApi>()
-        single<TeamsApi>()
 
         single<AuthRepository>()
         single<ReleaseRepository>()
@@ -205,8 +191,6 @@ class DataModule(context: Context) : QuillModule() {
         single<ScheduleRepository>()
         single<FeedRepository>()
         single<MenuRepository>()
-        single<DonationRepository>()
-        single<TeamsRepository>()
         single<RemoteFileRepository>()
 
         single<ReleaseUpdateMiddleware>()

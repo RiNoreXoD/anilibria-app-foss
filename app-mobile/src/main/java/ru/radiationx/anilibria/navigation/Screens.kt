@@ -17,7 +17,6 @@ import ru.radiationx.anilibria.ui.fragments.auth.main.Auth2FaCodeFragment
 import ru.radiationx.anilibria.ui.fragments.auth.main.AuthFragment
 import ru.radiationx.anilibria.ui.fragments.auth.social.AuthSocialFragment
 import ru.radiationx.anilibria.ui.fragments.auth.vk.AuthVkFragment
-import ru.radiationx.anilibria.ui.fragments.donation.detail.DonationDetailFragment
 import ru.radiationx.anilibria.ui.fragments.favorites.FavoritesFragment
 import ru.radiationx.anilibria.ui.fragments.feed.FeedFragment
 import ru.radiationx.anilibria.ui.fragments.history.HistoryFragment
@@ -26,7 +25,6 @@ import ru.radiationx.anilibria.ui.fragments.page.PageFragment
 import ru.radiationx.anilibria.ui.fragments.release.details.ReleaseFragment
 import ru.radiationx.anilibria.ui.fragments.schedule.ScheduleFragment
 import ru.radiationx.anilibria.ui.fragments.search.SearchCatalogFragment
-import ru.radiationx.anilibria.ui.fragments.teams.TeamsFragment
 import ru.radiationx.data.entity.domain.release.Release
 import ru.radiationx.data.entity.domain.types.EpisodeId
 import ru.radiationx.data.entity.domain.types.ReleaseCode
@@ -156,19 +154,5 @@ object Screens {
 
     class MainOther : BaseFragmentScreen() {
         override fun createFragment(factory: FragmentFactory) = OtherFragment()
-    }
-
-    class DonationDetail : BaseFragmentScreen() {
-        override fun createFragment(factory: FragmentFactory): Fragment {
-            return DonationDetailFragment()
-        }
-    }
-
-    class Teams(
-        private val query: String? = null
-    ) : BaseFragmentScreen() {
-        override fun createFragment(factory: FragmentFactory): Fragment {
-            return TeamsFragment.newInstance(query)
-        }
     }
 }

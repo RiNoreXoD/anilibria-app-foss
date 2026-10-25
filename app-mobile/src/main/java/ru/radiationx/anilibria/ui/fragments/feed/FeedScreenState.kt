@@ -1,6 +1,5 @@
 package ru.radiationx.anilibria.ui.fragments.feed
 
-import ru.radiationx.anilibria.model.DonationCardItemState
 import ru.radiationx.anilibria.model.FeedItemState
 import ru.radiationx.anilibria.model.ScheduleItemState
 import ru.radiationx.shared_app.controllers.loaderpage.PageLoaderState
@@ -9,7 +8,6 @@ import ru.radiationx.shared_app.controllers.loaderpage.PageLoaderState
 data class FeedScreenState(
     val data: PageLoaderState<FeedDataState> = PageLoaderState.empty(),
     val warnings: List<FeedAppWarning> = emptyList(),
-    val donationCardItemState: DonationCardItemState? = null
 )
 
 data class FeedDataState(
