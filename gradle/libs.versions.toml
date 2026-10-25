@@ -2,8 +2,8 @@
 #project-versions
 app-compile-sdk-version = "36"
 app-target-sdk-version = "36"
-app-min-sdk-version = "21"
-tv-min-sdk-version = "21"
+app-min-sdk-version = "28"
+tv-min-sdk-version = "28"
 
 mobile-version-code = "73"
 mobile-version-name = "2.14.2"
