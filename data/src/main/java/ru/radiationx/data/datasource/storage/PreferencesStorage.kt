@@ -9,7 +9,6 @@ import ru.radiationx.data.datasource.holders.AppPreference
 import ru.radiationx.data.datasource.holders.PreferencesHolder
 import ru.radiationx.data.entity.common.PlayerQuality
 import ru.radiationx.data.entity.common.PlayerTransport
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
