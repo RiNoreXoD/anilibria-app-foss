@@ -31,11 +31,9 @@ import ru.radiationx.anilibria.screen.suggestions.SuggestionsFragment
 import ru.radiationx.anilibria.screen.trash.TestFragment
 import ru.radiationx.anilibria.screen.update.UpdateFragment
 import ru.radiationx.anilibria.screen.update.source.UpdateSourceGuidedFragment
-import ru.radiationx.anilibria.screen.update.warning.UpdateWarningGuidedFragment
 import ru.radiationx.data.entity.domain.search.SearchForm
 import ru.radiationx.data.entity.domain.types.EpisodeId
 import ru.radiationx.data.entity.domain.types.ReleaseId
-import ru.radiationx.data.entity.domain.updater.UpdateData
 
 class ConfigScreen : FragmentScreen {
     override fun createFragment(factory: FragmentFactory): Fragment {
@@ -76,12 +74,6 @@ class UpdateScreen : FragmentScreen {
 class UpdateSourceScreen : GuidedAppScreen() {
     override fun createFragment(factory: FragmentFactory): FakeGuidedStepFragment {
         return UpdateSourceGuidedFragment()
-    }
-}
-
-class UpdateWarningScreen(private val link: UpdateData.UpdateLink) : GuidedAppScreen() {
-    override fun createFragment(factory: FragmentFactory): FakeGuidedStepFragment {
-        return UpdateWarningGuidedFragment.newInstance(link)
     }
 }
 

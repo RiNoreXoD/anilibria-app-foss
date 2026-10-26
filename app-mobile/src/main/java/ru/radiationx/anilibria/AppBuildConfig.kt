@@ -19,6 +19,4 @@ class AppBuildConfig @Inject constructor(
     override val buildDate: String = BuildConfig.BUILD_DATE
 
     override val debug: Boolean = BuildConfig.DEBUG
-
-    override val forRuStore: Boolean = BuildConfig.FOR_RUSTORE
 }

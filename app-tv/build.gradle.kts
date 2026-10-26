@@ -68,13 +68,6 @@ android {
     productFlavors {
         create("app") {
             dimension = "type"
-            buildConfigField("boolean", "FOR_RUSTORE", "false")
-        }
-
-        create("rustore") {
-            dimension = "type"
-            buildConfigField("boolean", "FOR_RUSTORE", "true")
-            versionName = "${libs.versions.tv.version.name.get()}-rustore"
         }
     }
 }

@@ -14,7 +14,6 @@ fun String.asDataIconRes(): Int? = when (this) {
 
     DataIcons.PATREON -> R.drawable.ic_logo_patreon
     DataIcons.TELEGRAM -> R.drawable.ic_logo_telegram
-    DataIcons.RUSTORE -> R.drawable.ic_logo_rustore
     DataIcons.ANILIBRIA -> R.drawable.ic_logo_alib
     DataIcons.INFO -> R.drawable.ic_information
     DataIcons.RULES -> R.drawable.ic_book_open_variant
@@ -32,7 +31,6 @@ fun String.asDataColorRes(): Int? = when (this) {
 
     DataColor.PATREON -> R.color.brand_patreon
     DataColor.TELEGRAM -> R.color.brand_telegram
-    DataColor.RUSTORE -> R.color.brand_rustore
     DataColor.ANILIBRIA -> R.color.alib_red
     else -> null
 }

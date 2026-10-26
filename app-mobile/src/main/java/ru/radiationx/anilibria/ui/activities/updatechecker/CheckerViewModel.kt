@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.radiationx.anilibria.presentation.common.IErrorHandler
-import ru.radiationx.data.SharedBuildConfig
 import ru.radiationx.data.downloader.LocalFile
 import ru.radiationx.data.downloader.RemoteFile
 import ru.radiationx.data.downloader.RemoteFileRepository
@@ -31,7 +30,6 @@ class CheckerViewModel @Inject constructor(
     private val errorHandler: IErrorHandler,
     private val systemUtils: SystemUtils,
     private val remoteFileRepository: RemoteFileRepository,
-    private val sharedBuildConfig: SharedBuildConfig
 ) : ViewModel() {
 
     private val loadingJobs = mutableMapOf<UpdateData.UpdateLink, Job>()
@@ -41,8 +39,6 @@ class CheckerViewModel @Inject constructor(
     private val _currentData = MutableStateFlow(CheckerScreenState())
 
     val openDownloadedFileAction = EventFlow<LocalFile>()
-
-    val openStoreWarningAction = EventFlow<UpdateData.UpdateLink>()
 
     val state = combine(
         _currentLoadings,
@@ -83,10 +79,6 @@ class CheckerViewModel @Inject constructor(
     }
 
     private fun downloadFile(link: UpdateData.UpdateLink) {
-        if (sharedBuildConfig.forRuStore) {
-            openStoreWarningAction.set(link)
-            return
-        }
         if (loadingJobs[link]?.isActive == true) {
             return
         }

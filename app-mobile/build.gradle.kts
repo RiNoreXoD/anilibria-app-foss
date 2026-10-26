@@ -81,19 +81,11 @@ android {
     productFlavors {
         create("app") {
             dimension = "type"
-            buildConfigField("boolean", "FOR_RUSTORE", "false")
-        }
-
-        create("rustore") {
-            dimension = "type"
-            buildConfigField("boolean", "FOR_RUSTORE", "true")
-            versionName = "${libs.versions.mobile.version.name.get()}-rustore"
         }
 
         create("store") {
             dimension = "type"
             applicationId = "tv.anilibria.store"
-            buildConfigField("boolean", "FOR_RUSTORE", "false")
             versionName = "${libs.versions.mobile.version.name.get()}-lite"
         }
     }

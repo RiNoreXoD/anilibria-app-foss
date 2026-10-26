@@ -5,7 +5,6 @@ object DataIcons {
     const val YOUTUBE1 = "yotube"
     const val PATREON = "patreon"
     const val TELEGRAM = "telegram"
-    const val RUSTORE = "rustore"
     const val ANILIBRIA = "anilibria"
     const val INFO = "info"
     const val RULES = "rules"
@@ -19,6 +18,5 @@ object DataColor {
     const val YOUTUBE1 = "yotube"
     const val PATREON = "patreon"
     const val TELEGRAM = "telegram"
-    const val RUSTORE = "rustore"
     const val ANILIBRIA = "anilibria"
 }

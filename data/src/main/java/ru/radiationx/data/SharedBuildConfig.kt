@@ -7,5 +7,4 @@ interface SharedBuildConfig {
     val versionCode: Int
     val buildDate: String
     val debug: Boolean
-    val forRuStore: Boolean
 }
