@@ -137,7 +137,7 @@ class WebPlayerActivity : BaseActivity(R.layout.activity_moon) {
     }
 
     private fun loadUrl() {
-        val releaseUrl = "${apiConfig.widgetsSiteUrl}/release/$argReleaseCode.html\""
+        val releaseUrl = "${apiConfig.widgetsSiteUrl}/release/$argReleaseCode.html"
 
         val template = get<Templates>().videoPageTemplate
         template.setVariableOpt("iframe_url", argUrl)

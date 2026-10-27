@@ -9,6 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flatMapConcat
@@ -50,6 +51,10 @@ class ScreenMessagesObserver @Inject constructor(
                 showMessage(message)
             }
             .launchIn(scope)
+
+        if (messagesBuffer.isNotEmpty()) {
+            scope.launch { messageBufferTrigger.emit(true) }
+        }
     }
 
     override fun onPause(owner: LifecycleOwner) {

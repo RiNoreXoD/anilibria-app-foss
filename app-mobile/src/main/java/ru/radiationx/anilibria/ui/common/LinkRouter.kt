@@ -20,7 +20,7 @@ class LinkRouter @Inject constructor(
     }
 
     private val historyImport by lazy {
-        Pattern.compile("^content[\\s\\S]*?\\.json\$")
+        Pattern.compile("^(content|file):[\\s\\S]*")
     }
 
     override fun handle(url: String, router: Router?, doNavigate: Boolean): Boolean {

@@ -21,7 +21,7 @@ import ru.radiationx.data.datasource.storage.ApiConfigStorage
 import ru.radiationx.data.entity.mapper.toDomain
 import ru.radiationx.data.entity.response.config.ApiConfigResponse
 import ru.radiationx.quill.get
-import ru.radiationx.shared.ktx.android.asMutableFlag
+import ru.radiationx.shared.ktx.android.asImmutableFlag
 import ru.radiationx.shared.ktx.android.getCompatColor
 import ru.radiationx.shared.ktx.coRunCatching
 import timber.log.Timber
@@ -140,6 +140,6 @@ class NotificationService : FirebaseMessagingService() {
             this,
             System.currentTimeMillis().toInt(),
             arrayOf(defaultIntent),
-            PendingIntent.FLAG_UPDATE_CURRENT.asMutableFlag()
+            PendingIntent.FLAG_UPDATE_CURRENT.asImmutableFlag()
         )
 }

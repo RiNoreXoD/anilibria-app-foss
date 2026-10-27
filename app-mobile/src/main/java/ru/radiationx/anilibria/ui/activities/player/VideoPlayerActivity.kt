@@ -96,7 +96,7 @@ class VideoPlayerActivity : BaseActivity(R.layout.activity_videoplayer) {
 
     private val nextAction = PictureInPictureController.Action(
         code = 5,
-        title = "Слудующая",
+        title = "Следующая",
         icRes = ru.radiationx.media.mobile.R.drawable.ic_media_skip_next_24
     )
 
