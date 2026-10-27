@@ -28,13 +28,13 @@ class SystemUtils @Inject constructor(
     }
 
     fun openLocalFile(file: LocalFile) {
-        val data = getRemoteFileUri(file.file, file.name)
+        val fileUri = getRemoteFileUri(file.file, file.name)
         val isApk = file.mimeType == "application/vnd.android.package-archive"
 
         if (isApk && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if (!context.packageManager.canRequestPackageInstalls()) {
                 val manageIntent = Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES).apply {
-                    data = Uri.parse("package:${context.packageName}")
+                    setData(Uri.parse("package:${context.packageName}"))
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 }
                 try {
@@ -47,7 +47,7 @@ class SystemUtils @Inject constructor(
         }
 
         val intent = Intent(Intent.ACTION_VIEW).apply {
-            setDataAndType(data, file.mimeType)
+            setDataAndType(fileUri, file.mimeType)
             putExtra(Intent.EXTRA_TITLE, file.name)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -68,12 +68,12 @@ class SystemUtils @Inject constructor(
     }
 
     fun shareLocalFile(file: LocalFile) {
-        val data = getRemoteFileUri(file.file, file.name)
+        val fileUri = getRemoteFileUri(file.file, file.name)
 
         val sendIntent = Intent(Intent.ACTION_SEND).apply {
             type = file.mimeType
             putExtra(Intent.EXTRA_TITLE, file.name)
-            putExtra(Intent.EXTRA_STREAM, data)
+            putExtra(Intent.EXTRA_STREAM, fileUri)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
 
