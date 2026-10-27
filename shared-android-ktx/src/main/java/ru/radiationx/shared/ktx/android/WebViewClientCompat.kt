@@ -39,6 +39,7 @@ open class WebViewClientCompat {
         handler: SslErrorHandler,
         error: SslError,
     ) {
+        handler.cancel()
     }
 
     /* Compat methods */

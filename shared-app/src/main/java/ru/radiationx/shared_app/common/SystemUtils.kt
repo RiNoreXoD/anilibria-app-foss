@@ -1,5 +1,6 @@
 package ru.radiationx.shared_app.common
 
+import android.content.ActivityNotFoundException
 import android.content.ClipData
 import android.content.ClipDescription
 import android.content.ClipboardManager
@@ -7,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.widget.Toast
 import androidx.core.content.FileProvider
 import ru.radiationx.data.downloader.LocalFile
 import java.io.File
@@ -34,7 +36,11 @@ class SystemUtils @Inject constructor(
         val chooserIntent = Intent.createChooser(intent, "Открыть в").apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
-        context.startActivity(chooserIntent);
+        try {
+            context.startActivity(chooserIntent)
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(context, "Приложение не найдено", Toast.LENGTH_SHORT).show()
+        }
     }
 
     fun shareLocalFile(file: LocalFile) {
@@ -59,7 +65,11 @@ class SystemUtils @Inject constructor(
             val packageName = it.activityInfo.packageName
             context.grantUriPermission(packageName, data, Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
-        context.startActivity(chooserIntent)
+        try {
+            context.startActivity(chooserIntent)
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(context, "Приложение не найдено", Toast.LENGTH_SHORT).show()
+        }
     }
 
     fun copyToClipBoard(s: String) {
@@ -85,17 +95,25 @@ class SystemUtils @Inject constructor(
         sendIntent.putExtra(Intent.EXTRA_TEXT, text)
         sendIntent.type = "text/plain"
         sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        context.startActivity(
-            Intent.createChooser(sendIntent, "Поделиться").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        )
+        try {
+            context.startActivity(
+                Intent.createChooser(sendIntent, "Поделиться").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            )
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(context, "Приложение не найдено", Toast.LENGTH_SHORT).show()
+        }
     }
 
     fun externalLink(url: String) {
         val intent =
             Intent(Intent.ACTION_VIEW, Uri.parse(url)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        context.startActivity(
-            Intent.createChooser(intent, "Открыть в").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        )
+        try {
+            context.startActivity(
+                Intent.createChooser(intent, "Открыть в").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            )
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(context, "Браузер не найден", Toast.LENGTH_SHORT).show()
+        }
     }
 
 }

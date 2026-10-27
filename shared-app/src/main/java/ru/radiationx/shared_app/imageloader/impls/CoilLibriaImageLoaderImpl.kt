@@ -12,9 +12,6 @@ import coil3.network.okhttp.OkHttpNetworkFetcherFactory
 import coil3.request.ErrorResult
 import coil3.request.ImageRequest
 import coil3.request.SuccessResult
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import okhttp3.OkHttpClient
 import ru.radiationx.data.di.providers.ApiClientWrapper
 import ru.radiationx.shared_app.R
@@ -32,26 +29,20 @@ class CoilLibriaImageLoaderImpl @Inject constructor(
 
     private var _imageLoader: ImageLoader? = null
 
-    private val loaderMutex = Mutex()
-
+    @Synchronized
     private fun getImageLoader(): ImageLoader {
-        val result = runBlocking {
-            loaderMutex.withLock {
-                val actualOkHttpClient = apiClientWrapper.get()
-                val okHttpClient = _okHttpClient
-                val imageLoader = _imageLoader
-                if (imageLoader == null || okHttpClient != actualOkHttpClient) {
-                    _imageLoader?.shutdown()
-                    val newImageLoader = createImageLoader(actualOkHttpClient)
-                    _okHttpClient = actualOkHttpClient
-                    _imageLoader = newImageLoader
-                    newImageLoader
-                } else {
-                    imageLoader
-                }
-            }
+        val actualOkHttpClient = apiClientWrapper.get()
+        val okHttpClient = _okHttpClient
+        val imageLoader = _imageLoader
+        return if (imageLoader == null || okHttpClient != actualOkHttpClient) {
+            _imageLoader?.shutdown()
+            val newImageLoader = createImageLoader(actualOkHttpClient)
+            _okHttpClient = actualOkHttpClient
+            _imageLoader = newImageLoader
+            newImageLoader
+        } else {
+            imageLoader
         }
-        return result
     }
 
     private fun createImageLoader(okHttpClient: OkHttpClient): ImageLoader {
