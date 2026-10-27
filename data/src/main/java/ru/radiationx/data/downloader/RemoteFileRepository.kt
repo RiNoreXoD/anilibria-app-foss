@@ -41,9 +41,6 @@ class RemoteFileRepository @Inject constructor(
             val responseBody = requireNotNull(response.body) {
                 "Response doesn't contain a body"
             }
-            require(responseBody.contentLength() >= 0) {
-                "Response content length < 0 bytes"
-            }
             loadingFile.createNewFile()
             responseBody.copyToWithProgress(loadingFile).collect(progress)
             val saveData = RemoteFileSaveData(

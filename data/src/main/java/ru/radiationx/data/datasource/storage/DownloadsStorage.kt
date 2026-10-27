@@ -25,8 +25,10 @@ class DownloadsStorage @Inject constructor(
         result
     }
 
+    @Synchronized
     override fun getDownloads(): List<Long> = currentDownloads.toList()
 
+    @Synchronized
     override fun saveDownloads(items: List<Long>) {
         sharedPreferences.edit().putString(KEY_DOWNLOADS, items.joinToString(",")).apply()
         currentDownloads.clear()

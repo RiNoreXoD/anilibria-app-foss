@@ -60,10 +60,9 @@ class ApiConfig @Inject constructor(
 
         possibleIps.clear()
         val ips = addresses
-            .map { address ->
+            .flatMap { address ->
                 address.ips + address.proxies.map { it.ip }
             }
-            .reduce { acc, list -> acc.plus(list) }
             .toSet()
             .toList()
         possibleIps.addAll(ips)

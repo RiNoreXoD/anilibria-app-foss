@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
-    <base-config cleartextTrafficPermitted="true">
+    <base-config cleartextTrafficPermitted="false">
         <trust-anchors>
             <certificates src="@raw/isrg_root_x2" />
             <certificates src="@raw/isrg_root_x1" />
@@ -10,7 +10,11 @@
             <certificates src="@raw/gtsr4" />
             <certificates src="@raw/gsr4" />
             <certificates src="system" />
-            <certificates src="user" />
         </trust-anchors>
     </base-config>
+    <debug-overrides>
+        <trust-anchors>
+            <certificates src="user" />
+        </trust-anchors>
+    </debug-overrides>
 </network-security-config>

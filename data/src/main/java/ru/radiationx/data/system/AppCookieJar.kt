@@ -34,7 +34,7 @@ class AppCookieJar @Inject constructor(
 
     override fun loadForRequest(url: HttpUrl): List<Cookie> {
         return runBlocking {
-            cookieHolder.getCookies().values.map { it }
+            cookieHolder.getCookies().values.filter { it.matches(url) }
         }
     }
 }
