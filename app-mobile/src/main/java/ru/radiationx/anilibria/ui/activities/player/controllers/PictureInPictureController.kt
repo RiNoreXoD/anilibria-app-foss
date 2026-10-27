@@ -137,7 +137,7 @@ class PictureInPictureController(
 
     private fun registerActionsReceiver() {
         val filter = IntentFilter(ACTION_REMOTE_CONTROL)
-        val flags = ContextCompat.RECEIVER_EXPORTED
+        val flags = ContextCompat.RECEIVER_NOT_EXPORTED
         ContextCompat.registerReceiver(activity, actionsReceiver, filter, flags)
     }
 
@@ -175,7 +175,9 @@ class PictureInPictureController(
     private fun Action.toRemoteAction(): RemoteAction {
         val actionEnabled = isEnabled
         val icon = Icon.createWithResource(activity, icRes)
-        val intent = Intent(ACTION_REMOTE_CONTROL).putExtra(EXTRA_REMOTE_CONTROL, code)
+        val intent = Intent(ACTION_REMOTE_CONTROL)
+            .setPackage(activity.packageName)
+            .putExtra(EXTRA_REMOTE_CONTROL, code)
         val pendingIntent = PendingIntent.getBroadcast(activity, code, intent, immutableFlag())
         val remoteAction = RemoteAction(icon, title, title, pendingIntent).apply {
             isEnabled = actionEnabled
