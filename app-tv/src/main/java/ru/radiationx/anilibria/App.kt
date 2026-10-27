@@ -40,9 +40,6 @@ class App : Application() {
     }
 
     private fun initInMainProcess() {
-        if (BuildConfig.DEBUG) {
-            Timber.plant(Timber.DebugTree())
-        }
         initDependencies()
         initMintPermissions()
         initMintPermissionsFlow()

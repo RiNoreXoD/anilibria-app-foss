@@ -28,7 +28,6 @@ import ru.radiationx.anilibria.screen.search.season.SearchSeasonGuidedFragment
 import ru.radiationx.anilibria.screen.search.sort.SearchSortGuidedFragment
 import ru.radiationx.anilibria.screen.search.year.SearchYearGuidedFragment
 import ru.radiationx.anilibria.screen.suggestions.SuggestionsFragment
-import ru.radiationx.anilibria.screen.trash.TestFragment
 import ru.radiationx.anilibria.screen.update.UpdateFragment
 import ru.radiationx.anilibria.screen.update.source.UpdateSourceGuidedFragment
 import ru.radiationx.data.entity.domain.search.SearchForm
@@ -119,12 +118,6 @@ class SearchCompletedGuidedScreen(private val onlyCompleted: Boolean) : GuidedAp
     }
 }
 
-class TestScreen : FragmentScreen {
-    override fun createFragment(factory: FragmentFactory): Fragment {
-        return TestFragment()
-    }
-}
-
 class AuthGuidedScreen : GuidedAppScreen() {
     override fun createFragment(factory: FragmentFactory): FakeGuidedStepFragment {
         return AuthGuidedFragment()
@@ -194,11 +187,5 @@ class PlayerEndSeasonGuidedScreen(
 ) : GuidedAppScreen() {
     override fun createFragment(factory: FragmentFactory): FakeGuidedStepFragment {
         return EndSeasonGuidedFragment().putIds(releaseId, episodeId)
-    }
-}
-
-class TestGuidedStepScreen : GuidedAppScreen() {
-    override fun createFragment(factory: FragmentFactory): FakeGuidedStepFragment {
-        return DialogExampleFragment()
     }
 }
