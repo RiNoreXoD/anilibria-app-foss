@@ -6,8 +6,9 @@ import android.content.ClipDescription
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
+import android.provider.Settings
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import ru.radiationx.data.downloader.LocalFile
@@ -28,16 +29,39 @@ class SystemUtils @Inject constructor(
 
     fun openLocalFile(file: LocalFile) {
         val data = getRemoteFileUri(file.file, file.name)
+        val isApk = file.mimeType == "application/vnd.android.package-archive"
+
+        if (isApk && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (!context.packageManager.canRequestPackageInstalls()) {
+                val manageIntent = Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES).apply {
+                    data = Uri.parse("package:${context.packageName}")
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+                try {
+                    context.startActivity(manageIntent)
+                } catch (e: ActivityNotFoundException) {
+                    Toast.makeText(context, "Настройки не найдены", Toast.LENGTH_SHORT).show()
+                }
+                return
+            }
+        }
+
         val intent = Intent(Intent.ACTION_VIEW).apply {
             setDataAndType(data, file.mimeType)
             putExtra(Intent.EXTRA_TITLE, file.name)
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        }
-        val chooserIntent = Intent.createChooser(intent, "Открыть в").apply {
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
+
         try {
-            context.startActivity(chooserIntent)
+            if (isApk) {
+                context.startActivity(intent)
+            } else {
+                val chooserIntent = Intent.createChooser(intent, "Открыть в").apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+                context.startActivity(chooserIntent)
+            }
         } catch (e: ActivityNotFoundException) {
             Toast.makeText(context, "Приложение не найдено", Toast.LENGTH_SHORT).show()
         }
@@ -57,14 +81,6 @@ class SystemUtils @Inject constructor(
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
 
-        val resolves = context.packageManager.queryIntentActivities(
-            chooserIntent,
-            PackageManager.MATCH_DEFAULT_ONLY
-        )
-        resolves.forEach {
-            val packageName = it.activityInfo.packageName
-            context.grantUriPermission(packageName, data, Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        }
         try {
             context.startActivity(chooserIntent)
         } catch (e: ActivityNotFoundException) {

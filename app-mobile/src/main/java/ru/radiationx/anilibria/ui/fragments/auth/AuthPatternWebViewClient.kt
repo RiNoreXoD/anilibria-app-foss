@@ -20,7 +20,7 @@ class AuthPatternWebViewClient(
             val matchSuccess = try {
                 val matcher = Pattern.compile(resultPattern).matcher(url)
                 if (matcher.find()) {
-                    matcher.group(1) != null
+                    if (matcher.groupCount() >= 1) matcher.group(1) != null else true
                 } else {
                     false
                 }

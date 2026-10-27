@@ -130,7 +130,11 @@ class NotificationService : FirebaseMessagingService() {
             }
 
             else -> {
-                Screens.IntentHandler(remote.url).createIntent(this)
+                if (remote.url.isNullOrBlank()) {
+                    Screens.Main().createIntent(this)
+                } else {
+                    Screens.IntentHandler(remote.url).createIntent(this)
+                }
             }
         }
     }

@@ -127,7 +127,7 @@ class VideoPlayerActivity : BaseActivity(R.layout.activity_videoplayer) {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        if (isLaunchedFromHistory()) {
+        if (isLaunchedFromHistory() || intent?.hasExtra(ARG_EPISODE_ID) != true) {
             startMainActivity()
             finish()
             return

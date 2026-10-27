@@ -18,6 +18,7 @@ class PageErrorWebViewClient(
         handler: SslErrorHandler,
         error: SslError,
     ) {
+        super.onReceivedSslError(view, handler, error)
         onPageCommitError.invoke(error.toException())
     }
 

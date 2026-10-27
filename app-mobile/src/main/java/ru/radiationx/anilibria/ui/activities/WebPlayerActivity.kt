@@ -100,6 +100,7 @@ class WebPlayerActivity : BaseActivity(R.layout.activity_moon) {
                 handler: SslErrorHandler,
                 error: SslError,
             ) {
+                super.onReceivedSslError(view, handler, error)
                 onPageError(error.toException())
             }
 
