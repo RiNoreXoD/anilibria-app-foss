@@ -1,8 +1,6 @@
 package ru.radiationx.anilibria
 
-import android.app.ActivityManager
 import android.app.Application
-import android.content.Context
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -98,10 +96,7 @@ class App : Application() {
     private fun isMainProcess() = packageName == getCurrentProcessName()
 
     private fun getCurrentProcessName(): String? {
-        val mypid = android.os.Process.myPid()
-        val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        val processes = manager.runningAppProcesses
-        return processes?.firstOrNull { it.pid == mypid }?.processName
+        return Application.getProcessName()
     }
 
 }

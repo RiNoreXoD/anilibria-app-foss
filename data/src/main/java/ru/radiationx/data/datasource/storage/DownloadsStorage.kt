@@ -17,8 +17,7 @@ class DownloadsStorage @Inject constructor(
         val result = mutableListOf<Long>()
         sharedPreferences.getString(KEY_DOWNLOADS, null)
             ?.split(",")
-            ?.filter { it.isNotEmpty() }
-            ?.map { it.toLong() }
+            ?.mapNotNull { it.trim().toLongOrNull() }
             ?.also {
                 result.addAll(it)
             }
