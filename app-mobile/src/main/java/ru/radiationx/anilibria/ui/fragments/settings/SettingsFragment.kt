@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import ru.radiationx.anilibria.R
 import ru.radiationx.anilibria.apptheme.AppThemeController
+import com.google.android.material.color.DynamicColors
 import ru.radiationx.anilibria.apptheme.AppThemeMode
 import ru.radiationx.anilibria.navigation.Screens
 import ru.radiationx.data.SharedBuildConfig
@@ -111,12 +112,18 @@ class SettingsFragment : BaseSettingFragment() {
                 toolbar { title(getString(R.string.pref_title_theme_mode)) }
             }
             body {
-                AppThemeMode.entries.forEach { mode ->
+                AppThemeMode.entries.filter { it != AppThemeMode.DYNAMIC || DynamicColors.isDynamicColorAvailable() }.forEach { mode ->
                     radioItem {
                         title(mode.getTitle())
                         select(mode == currentValue)
                         action(TaiwaAction.Close)
-                        onClick { appThemeController.setMode(mode) }
+                        onClick {
+                            val prevMode = appThemeController.getMode()
+                            appThemeController.setMode(mode)
+                            if (prevMode == AppThemeMode.DYNAMIC || mode == AppThemeMode.DYNAMIC) {
+                                requireActivity().recreate()
+                            }
+                        }
                     }
                 }
             }
@@ -199,6 +206,7 @@ class SettingsFragment : BaseSettingFragment() {
             AppThemeMode.LIGHT -> R.string.pref_value_theme_mode_light
             AppThemeMode.DARK -> R.string.pref_value_theme_mode_dark
             AppThemeMode.SYSTEM -> R.string.pref_value_theme_mode_system
+            AppThemeMode.DYNAMIC -> R.string.pref_value_theme_mode_dynamic
         }.let { getString(it) }
     }
 

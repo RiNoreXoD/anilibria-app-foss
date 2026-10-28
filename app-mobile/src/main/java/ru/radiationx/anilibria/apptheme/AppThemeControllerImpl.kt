@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
+import com.google.android.material.color.DynamicColors
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
@@ -73,11 +74,13 @@ class AppThemeControllerImpl @Inject constructor(
     }
 
     override fun getMode(): AppThemeMode {
-        return sharedPreferences.getString(APP_THEME_KEY, null)
-            ?.let { prefMode ->
-                AppThemeMode.entries.find { it.value == prefMode }
-            }
-            ?: AppThemeMode.SYSTEM
+        val prefMode = sharedPreferences.getString(APP_THEME_KEY, null)
+        val mode = AppThemeMode.entries.find { it.value == prefMode } ?: AppThemeMode.SYSTEM
+        return if (mode == AppThemeMode.DYNAMIC && !DynamicColors.isDynamicColorAvailable()) {
+            AppThemeMode.SYSTEM
+        } else {
+            mode
+        }
     }
 
     override fun setMode(mode: AppThemeMode) {
@@ -89,7 +92,8 @@ class AppThemeControllerImpl @Inject constructor(
     private fun getAppTheme(): AppTheme = when (getMode()) {
         AppThemeMode.LIGHT -> AppTheme.LIGHT
         AppThemeMode.DARK -> AppTheme.DARK
-        AppThemeMode.SYSTEM -> getAppThemeByConfig()
+        AppThemeMode.SYSTEM,
+        AppThemeMode.DYNAMIC -> getAppThemeByConfig()
     }
 
     private fun getAppThemeByConfig(): AppTheme {
@@ -107,7 +111,8 @@ class AppThemeControllerImpl @Inject constructor(
         val delegateMode = when (mode) {
             AppThemeMode.LIGHT -> AppCompatDelegate.MODE_NIGHT_NO
             AppThemeMode.DARK -> AppCompatDelegate.MODE_NIGHT_YES
-            AppThemeMode.SYSTEM -> {
+            AppThemeMode.SYSTEM,
+            AppThemeMode.DYNAMIC -> {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
                 } else {

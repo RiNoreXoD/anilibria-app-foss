@@ -6,8 +6,12 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import com.google.android.material.color.DynamicColors
+import com.google.android.material.color.DynamicColorsOptions
 import ru.mintrocket.lib.mintpermissions.ext.initMintPermissions
 import ru.mintrocket.lib.mintpermissions.flows.ext.initMintPermissionsFlow
+import ru.radiationx.anilibria.apptheme.AppThemeController
+import ru.radiationx.anilibria.apptheme.AppThemeMode
 import ru.radiationx.anilibria.di.AppModule
 import ru.radiationx.data.datasource.holders.PreferencesHolder
 import ru.radiationx.data.di.DataModule
@@ -34,6 +38,14 @@ class App : Application() {
         }
 
         initDependencies()
+
+        val appThemeController = get<AppThemeController>()
+        DynamicColors.applyToActivitiesIfAvailable(
+            this,
+            DynamicColorsOptions.Builder()
+                .setPrecondition { _, _ -> appThemeController.getMode() == AppThemeMode.DYNAMIC }
+                .build()
+        )
 
         appVersionCheck()
 

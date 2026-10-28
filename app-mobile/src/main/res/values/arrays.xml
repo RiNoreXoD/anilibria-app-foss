@@ -5,12 +5,14 @@
         <item>@string/pref_value_theme_mode_light</item>
         <item>@string/pref_value_theme_mode_dark</item>
         <item>@string/pref_value_theme_mode_system</item>
+        <item>@string/pref_value_theme_mode_dynamic</item>
     </string-array>
 
     <string-array name="entry_values_theme_mode">
         <item>light</item>
         <item>dark</item>
         <item>system</item>
+        <item>dynamic</item>
     </string-array>
 
 </resources>
